@@ -27,7 +27,7 @@ function LoginForm() {
 						type="password"
 						required
 						placeholder="Password"
-						minlength="8"
+						minLength="8"
 						pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
 						title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
 					/>
@@ -47,7 +47,7 @@ function LoginForm() {
 				</div>
 				<button className="btn btn-outline btn-primary btn-block mt-10">Log into account</button>
 
-				<div className="divider opacity-75">Or Login with</div>
+				<div className="divider opacity-75">Or login with</div>
 				<div className="flex flex-col lg:flex-row w-full gap-3 justify-center">
 					<button className="btn w-full lg:w-1/2 bg-white text-black border-[#e5e5e5]">
 						<svg aria-label="Google logo" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
