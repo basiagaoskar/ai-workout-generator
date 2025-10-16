@@ -5,6 +5,8 @@ import Home from "./pages/Home/Home";
 import Auth from "./pages/Auth/Auth";
 import LoginForm from "./pages/Auth/LoginForm";
 import SignupForm from "./pages/Auth/SignupForm";
+import WorkoutGenerator from "./pages/Generator/WorkoutGenerator";
+
 import NotFound from "./pages/ErrorPage/NotFound";
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
 					<Route path="login" element={<LoginForm />} />
 					<Route path="signup" element={<SignupForm />} />
 				</Route>
+				<Route path="/generate-workout" element={<WorkoutGenerator />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</>
