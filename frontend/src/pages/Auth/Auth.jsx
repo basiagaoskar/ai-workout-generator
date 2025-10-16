@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 import HomeButton from "../../components/HomeButton";
 
 function Auth() {
+	const totalSlides = 4;
+	const [currentSlide, setCurrentSlide] = useState(1);
+
+	useEffect(() => {
+		const slideInterval = setInterval(() => {
+			setCurrentSlide((prev) => (prev % totalSlides) + 1);
+		}, 4000);
+
+		return () => clearInterval(slideInterval);
+	}, []);
+
+	useEffect(() => {
+		const slideElement = document.getElementById(`slide${currentSlide}`);
+		if (slideElement) {
+			slideElement.scrollIntoView();
+		}
+	}, [currentSlide]);
+
 	return (
 		<>
 			<div className="min-h-screen text-primary bg-base-100 flex justify-center items-center">
@@ -13,48 +31,16 @@ function Auth() {
 						<div className="hidden lg:block w-full h-full">
 							<div className="carousel rounded-xl">
 								<div id="slide1" className="carousel-item relative w-full ">
-									<img src="/cat.png" className="w-full" />
-									<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-										<a href="#slide4" className="btn  btn-secondary btn-circle">
-											❮
-										</a>
-										<a href="#slide2" className="btn btn-secondary btn-circle">
-											❯
-										</a>
-									</div>
+									<img src="/cat.png" className="w-full" alt="Cat 1" />
 								</div>
 								<div id="slide2" className="carousel-item relative w-full">
-									<img src="/cat2.jpg" className="w-full" />
-									<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-										<a href="#slide1" className="btn btn-secondary btn-circle">
-											❮
-										</a>
-										<a href="#slide3" className="btn btn-secondary btn-circle">
-											❯
-										</a>
-									</div>
+									<img src="/cat2.jpg" className="w-full" alt="Cat 2" />
 								</div>
 								<div id="slide3" className="carousel-item relative w-full">
-									<img src="/cat3.jpg" className="w-full" />
-									<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-										<a href="#slide2" className="btn btn-secondary btn-circle">
-											❮
-										</a>
-										<a href="#slide4" className="btn btn-secondary btn-circle">
-											❯
-										</a>
-									</div>
+									<img src="/cat3.jpg" className="w-full" alt="Cat 3" />
 								</div>
 								<div id="slide4" className="carousel-item relative w-full">
-									<img src="/cat4.jpg" className="w-full" />
-									<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-										<a href="#slide3" className="btn btn-secondary btn-circle">
-											❮
-										</a>
-										<a href="#slide1" className="btn btn-secondary btn-circle">
-											❯
-										</a>
-									</div>
+									<img src="/cat4.jpg" className="w-full" alt="Cat 4" />
 								</div>
 							</div>
 						</div>
