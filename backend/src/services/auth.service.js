@@ -1,5 +1,6 @@
 import bycrypt from "bcrypt";
 import { PrismaClient } from "../generated/prisma/client.js";
+import { generateToken } from "../utils/jwt.js";
 
 const prisma = new PrismaClient();
 
@@ -32,6 +33,8 @@ export const registerUser = async (userData, res) => {
 		},
 	});
 
+	generateToken(newUser.id, res);
+
 	return { id: newUser.id, firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email };
 };
 
@@ -54,6 +57,8 @@ export const authenticateUser = async (loginData, res) => {
 	if (!isPasswordValid) {
 		throw new Error("Invalid email or password");
 	}
+
+	const token = generateToken(user.id, res);
 
 	return {
 		id: user.id,
