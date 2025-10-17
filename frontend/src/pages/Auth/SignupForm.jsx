@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { KeyRound, Mail, Loader2 } from "lucide-react";
+
 import { useAuthStore } from "../../store/useAuthStore";
 
 function SignupForm() {
@@ -47,9 +48,17 @@ function SignupForm() {
 					<input type="email" placeholder="mail@site.com" name="email" onChange={handleChange} required />
 				</label>
 
-				<label className={`input w-full  ${isPasswordValid ? "border-success" : "border-error"}`}>
+				<label className="input validator w-full">
 					<KeyRound className="opacity-50" />
-					<input type="password" required placeholder="Password" name="password" onChange={handleChange} />
+					<input
+						type="password"
+						required
+						placeholder="Password"
+						name="password"
+						onChange={handleChange}
+						minlength="8"
+						pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+					/>
 				</label>
 
 				{!isPasswordValid && formData.password.length > 0 && (
