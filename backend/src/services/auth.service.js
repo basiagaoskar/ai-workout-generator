@@ -34,3 +34,31 @@ export const registerUser = async (userData, res) => {
 
 	return { id: newUser.id, firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email };
 };
+
+export const authenticateUser = async (loginData, res) => {
+	const { email, password } = loginData;
+	if (!email || !password) {
+		throw new Error("Email and password are required");
+	}
+
+	const user = await prisma.user.findUnique({
+		where: { email },
+	});
+
+	if (!user) {
+		throw new Error("Invalid email or password");
+	}
+
+	const isPasswordValid = await bycrypt.compare(password, user.passwordHash);
+
+	if (!isPasswordValid) {
+		throw new Error("Invalid email or password");
+	}
+
+	return {
+		id: user.id,
+		firstName: user.firstName,
+		lastName: user.lastName,
+		email: user.email,
+	};
+};
