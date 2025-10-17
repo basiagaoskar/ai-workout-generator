@@ -1,48 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { KeyRound, Mail } from "lucide-react";
+import { KeyRound, Mail, Loader2 } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
 
 function SignupForm() {
+	const [formData, setFormData] = useState({
+		firstName: "",
+		lastName: "",
+		email: "",
+		password: "",
+		tos: false,
+	});
+
+	const { signup, isSigningUp } = useAuthStore();
+
+	const handleChange = (e) => {
+		const { name, value, type, checked } = e.target;
+		setFormData({
+			...formData,
+			[name]: type === "checkbox" ? checked : value,
+		});
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (!isFormValid) return;
+		signup(formData);
+	};
+
+	const isPasswordValid = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(formData.password);
+
+	const isFormValid = formData.firstName.trim() && formData.lastName.trim() && formData.email.trim() && isPasswordValid && formData.tos;
+
 	return (
 		<>
 			<h1 className="text-4xl lg:text-5xl font-bold mb-20 text-center">Create an account</h1>
 
-			<form action="" method="post" className="flex flex-col gap-4 w-full max-w-sm">
+			<form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-sm">
 				<div className="flex flex-col sm:flex-row gap-4">
-					<input type="text" placeholder="First name" className="input w-full" required />
-					<input type="text" placeholder="Last name" className="input w-full" required />
+					<input type="text" placeholder="First name" name="firstName" className="input w-full" onChange={handleChange} required />
+					<input type="text" placeholder="Last name" name="lastName" className="input w-full" onChange={handleChange} required />
 				</div>
 
 				<label className="input validator w-full">
 					<Mail className="opacity-50" />
-					<input type="email" placeholder="mail@site.com" required />
+					<input type="email" placeholder="mail@site.com" name="email" onChange={handleChange} required />
 				</label>
-				<label className="input validator w-full">
+
+				<label className={`input w-full  ${isPasswordValid ? "border-success" : "border-error"}`}>
 					<KeyRound className="opacity-50" />
-					<input
-						type="password"
-						required
-						placeholder="Password"
-						minLength="8"
-						pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-						title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-					/>
+					<input type="password" required placeholder="Password" name="password" onChange={handleChange} />
 				</label>
-				<p className="validator-hint hidden">
-					Must be more than 8 characters, including
-					<br />
-					At least one number <br />
-					At least one lowercase letter <br />
-					At least one uppercase letter
-				</p>
-				<div className="flex flex-col sm:flex-row text-xs opacity-75 gap-0.5">
-					<p>Already have an account? </p>
+
+				{!isPasswordValid && formData.password.length > 0 && (
+					<p className="text-xs text-error">
+						Must be at least 8 characters long, include one number, one lowercase, and one uppercase letter.
+					</p>
+				)}
+
+				<div className="flex flex-wrap items-center text-xs opacity-75 gap-x-1">
+					<p>Already have an account?</p>
 					<Link to="/auth/login" className="underline text-info">
 						Log in
 					</Link>
 				</div>
+
 				<div className="">
-					<input type="checkbox" className="checkbox validator" required title="Required" />
+					<input type="checkbox" name="tos" checked={formData.tos} onChange={handleChange} className="checkbox validator" required />
 					<p className="inline-block ml-2 text-xs opacity-75">
 						I agree to the{" "}
 						<Link to="/tos" className="underline text-info">
@@ -50,7 +74,16 @@ function SignupForm() {
 						</Link>
 					</p>
 				</div>
-				<button className="btn btn-outline btn-primary btn-block mt-10">Create account</button>
+
+				<button type="submit" className="btn btn-outline btn-primary btn-block mt-10" disabled={!isFormValid || isSigningUp}>
+					{isSigningUp ? (
+						<>
+							<Loader2 className="size-5 animate-spin" /> Loading...
+						</>
+					) : (
+						"Create account"
+					)}
+				</button>
 
 				<div className="divider opacity-75">Or register with</div>
 				<div className="flex flex-col lg:flex-row w-full gap-3 justify-center">

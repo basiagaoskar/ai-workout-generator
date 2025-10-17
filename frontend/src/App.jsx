@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Home from "./pages/Home/Home";
 import Auth from "./pages/Auth/Auth";
@@ -22,6 +23,8 @@ function App() {
 				<Route path="/generate-workout" element={<WorkoutGenerator />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
+
+			<Toaster />
 		</>
 	);
 }
