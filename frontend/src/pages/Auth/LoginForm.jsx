@@ -1,26 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { KeyRound, Mail } from "lucide-react";
+import { KeyRound, Mail, Loader2 } from "lucide-react";
+
+import { useAuthStore } from "../../store/useAuthStore";
 
 function LoginForm() {
+	const [formData, setFormData] = useState({
+		email: "",
+		password: "",
+	});
+
+	const { login, isLoggingIn } = useAuthStore();
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		login(formData);
+	};
+
 	return (
 		<>
 			<h1 className="text-4xl lg:text-5xl font-bold mb-20 text-center">Log into account</h1>
 
-			<form action="" method="post" className="flex flex-col gap-4 w-full max-w-sm">
+			<form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-sm">
 				<label className="input validator w-full">
 					<Mail className="opacity-50" />
-					<input type="email" placeholder="mail@site.com" required />
+					<input type="email" name="email" placeholder="mail@site.com" required onChange={handleChange} />
 				</label>
 				<label className="input validator w-full">
 					<KeyRound className="opacity-50" />
 					<input
 						type="password"
+						name="password"
 						required
 						placeholder="Password"
 						minLength="8"
 						pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
 						title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+						onChange={handleChange}
 					/>
 				</label>
 				<p className="validator-hint hidden">
@@ -30,13 +54,21 @@ function LoginForm() {
 					At least one lowercase letter <br />
 					At least one uppercase letter
 				</p>
-				<div className="flex flex-col sm:flex-row text-xs opacity-75 gap-0.5">
+				<div className="flex flex-wrap items-center text-xs opacity-75 gap-x-1">
 					<p>Don't have an account? </p>
 					<Link to="/auth/signup" className="underline text-info">
 						Sign up
 					</Link>
 				</div>
-				<button className="btn btn-outline btn-primary btn-block mt-10">Log into account</button>
+				<button type="submit" className="btn btn-outline btn-primary btn-block mt-10" disabled={isLoggingIn}>
+					{isLoggingIn ? (
+						<>
+							<Loader2 className="size-5 animate-spin" /> Loading...
+						</>
+					) : (
+						"Log In"
+					)}
+				</button>
 
 				<div className="divider opacity-75">Or login with</div>
 				<div className="flex flex-col lg:flex-row w-full gap-3 justify-center">
