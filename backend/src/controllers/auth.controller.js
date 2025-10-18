@@ -1,4 +1,4 @@
-import { verifyAuth, registerUser, authenticateUser } from "../services/auth.service.js";
+import { verifyAuth, registerUser, authenticateUser, clearAuthCookie } from "../services/auth.service.js";
 import { setJwtCookie } from "../utils/jwt.js";
 
 export const checkAuth = async (req, res) => {
@@ -25,6 +25,15 @@ export const login = async (req, res) => {
 		const { loggedInUser, token } = await authenticateUser(req.body);
 		setJwtCookie(res, token);
 		res.status(200).json(loggedInUser);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const logout = async (req, res) => {
+	try {
+		clearAuthCookie(res);
+		res.status(200).json({message: "Logged out successfully"});
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

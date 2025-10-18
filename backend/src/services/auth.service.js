@@ -2,7 +2,7 @@ import bycrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "../generated/prisma/client.js";
-import { generateToken } from "../utils/jwt.js";
+import { generateToken, clearJwtCookie } from "../utils/jwt.js";
 
 const prisma = new PrismaClient();
 
@@ -112,4 +112,8 @@ export const authenticateUser = async (loginData) => {
 		},
 		token: token,
 	};
+};
+
+export const clearAuthCookie = async (res) => {
+	clearJwtCookie(res);
 };
