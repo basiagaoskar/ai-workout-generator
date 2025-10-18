@@ -4,9 +4,22 @@ import { axiosInstance } from "../lib/axios";
 
 export const useAuthStore = create((set) => ({
 	authUser: null,
+	isCheckingAuth: true,
 
 	isSigningUp: false,
 	isLoggingIn: false,
+
+	checkAuth: async () => {
+		try {
+			const res = await axiosInstance.get("/auth/check");
+			set({ authUser: res.data, isCheckingAuth: false });
+		} catch (error) {
+			if (error.response?.status === 401) {
+				toast.error(error.response.data?.message);
+			}
+			set({ authUser: null, isCheckingAuth: false });
+		}
+	},
 
 	signup: async (data) => {
 		set({ isSigningUp: true });

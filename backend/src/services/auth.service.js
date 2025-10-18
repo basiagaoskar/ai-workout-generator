@@ -1,10 +1,45 @@
 import bycrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 import { PrismaClient } from "../generated/prisma/client.js";
 import { generateToken } from "../utils/jwt.js";
 
 const prisma = new PrismaClient();
 
-export const registerUser = async (userData, res) => {
+export const verifyAuth = async (cookies) => {
+	const token = cookies?.jwt;
+
+	if (!token) {
+		return null;
+	}
+
+	const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+	const user = await prisma.user.findUnique({
+		where: { id: decoded.userId },
+		select: {
+			id: true,
+			firstName: true,
+			lastName: true,
+			email: true,
+		},
+	});
+
+	if (!user) {
+		throw new Error("User not found");
+	}
+
+	return {
+		user: {
+			id: user.id,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			email: user.email,
+		},
+	};
+};
+
+export const registerUser = async (userData) => {
 	const { firstName, lastName, email, password } = userData;
 	if (!firstName || !lastName || !email || !password) {
 		throw new Error("All fields are required");
@@ -33,12 +68,20 @@ export const registerUser = async (userData, res) => {
 		},
 	});
 
-	generateToken(newUser.id, res);
+	const token = generateToken(newUser.id);
 
-	return { id: newUser.id, firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email };
+	return {
+		createdUser: {
+			id: newUser.id,
+			firstName: newUser.firstName,
+			lastName: newUser.lastName,
+			email: newUser.email,
+		},
+		token: token,
+	};
 };
 
-export const authenticateUser = async (loginData, res) => {
+export const authenticateUser = async (loginData) => {
 	const { email, password } = loginData;
 	if (!email || !password) {
 		throw new Error("Email and password are required");
@@ -58,12 +101,15 @@ export const authenticateUser = async (loginData, res) => {
 		throw new Error("Invalid email or password");
 	}
 
-	const token = generateToken(user.id, res);
+	const token = generateToken(user.id);
 
 	return {
-		id: user.id,
-		firstName: user.firstName,
-		lastName: user.lastName,
-		email: user.email,
+		loggedInUser: {
+			id: user.id,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			email: user.email,
+		},
+		token: token,
 	};
 };
