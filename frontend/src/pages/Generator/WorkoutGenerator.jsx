@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Dumbbell, Target, Home, Calendar, Mars, Venus } from "lucide-react";
+import { Dumbbell, Target, Home, Calendar, Mars, Venus, ArrowLeft, House } from "lucide-react";
 
 import HomeButton from "../../components/HomeButton";
 import SummaryStep from "./Steps/SummaryStep";
@@ -120,7 +120,13 @@ function WorkoutGenerator() {
 
 	return (
 		<div className="min-h-screen bg-base-100 text-base-content flex items-center justify-center py-10">
-			<HomeButton />
+			<Link to="/home" className="absolute top-4 left-4 z-10">
+				<button className="btn btn-lg ">
+					<ArrowLeft />
+					<div className="hidden lg:block">Back to home</div>
+					<House className="block lg:hidden ml-2" />
+				</button>
+			</Link>
 
 			<div className="container mx-auto px-4 max-w-5xl ">
 				<div className="flex flex-col items-center justify-center p-5 sm:p-18 bg-base-300 rounded-2xl shadow-xl">

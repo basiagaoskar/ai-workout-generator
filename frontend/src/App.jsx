@@ -3,10 +3,12 @@ import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 
-import Home from "./pages/Home/Home";
+import Start from "./pages/Start/Start";
 import Auth from "./pages/Auth/Auth";
 import LoginForm from "./pages/Auth/LoginForm";
 import SignupForm from "./pages/Auth/SignupForm";
+
+import Home from "./pages/Home/Home";
 import WorkoutGenerator from "./pages/Generator/WorkoutGenerator";
 
 import NotFound from "./pages/ErrorPage/NotFound";
@@ -32,7 +34,14 @@ function App() {
 	return (
 		<>
 			<Routes>
-				<Route path="/" element={<Home />} />
+				<Route
+					path="/"
+					element={
+						<RouteGuard mode="guest">
+							<Start />
+						</RouteGuard>
+					}
+				/>
 				<Route
 					path="/auth"
 					element={
@@ -50,6 +59,14 @@ function App() {
 					element={
 						<RouteGuard mode="protected">
 							<WorkoutGenerator />
+						</RouteGuard>
+					}
+				/>
+				<Route
+					path="/home"
+					element={
+						<RouteGuard mode="protected">
+							<Home />
 						</RouteGuard>
 					}
 				/>
