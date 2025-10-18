@@ -26,11 +26,11 @@ const Home = () => {
 						/>
 						<div className="lg:w-1/2">
 							<h1 className="text-5xl lg:text-7xl font-extrabold mb-6 text-balance mt-10 lg:mt-0">
-								Generate Your Own Workout in <span className="text-primary">Seconds</span>.
+								Generate Your Own Workout in <span className="text-primary">Seconds</span>
 							</h1>
 							<p className="py-6 text-lg opacity-80">
-								Leverage the power of **Artificial Intelligence** to create a personalized training plan, tailored to your goals, available
-								equipment, and fitness level. Stop guessing, start growing.
+								Leverage the power of <span className="font-bold">Artificial Intelligence</span> to create a personalized training
+								plan, tailored to your goals, available equipment, and fitness level. Stop guessing, start growing.
 							</p>
 							<Link to="/generate-workout" className="btn btn-primary btn-lg mt-4 shadow-lg shadow-primary/50">
 								<Sparkles className="h-6 w-6" /> Start Generating Your Workout
