@@ -39,7 +39,7 @@ const Start = () => {
 					</div>
 				</section>
 
-				<section className="py-20">
+				<section className="py-30">
 					<h2 className="text-4xl font-bold text-center mb-12">Key Features</h2>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 						<div className="card bg-base-200 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
@@ -71,7 +71,7 @@ const Start = () => {
 					</div>
 				</section>
 
-				<section className="py-16 lg:py-32">
+				<section className="py-16 lg:py-42">
 					<h2 className="text-4xl font-bold text-center mb-12">How It Works</h2>
 					<div className="steps steps-vertical lg:steps-horizontal w-full">
 						<div className="step step-primary">
