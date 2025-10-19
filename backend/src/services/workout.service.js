@@ -1,6 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
+import { PrismaClient } from "../generated/prisma/client.js";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const prisma = new PrismaClient();
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
@@ -46,7 +48,34 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 	try {
 		const workoutJSON = JSON.parse(cleanedText);
 
-		return workoutJSON;
+		const savedPlan = await prisma.workoutPlan.create({
+			data: {
+				planName: workoutJSON.planName,
+				userId: userId,
+				days: {
+					create: workoutJSON.days.map((day) => ({
+						dayNumber: day.day,
+						focus: day.focus,
+						exercises: {
+							create: day.exercises.map((exercise) => ({
+								name: exercise.name,
+								sets: exercise.sets,
+								reps: exercise.reps,
+							})),
+						},
+					})),
+				},
+			},
+			include: {
+				days: {
+					include: {
+						exercises: true,
+					},
+				},
+			},
+		});
+
+		return savedPlan;
 	} catch (e) {
 		throw new Error("AI returned invalid data format");
 	}
