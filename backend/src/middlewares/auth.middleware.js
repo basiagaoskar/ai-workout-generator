@@ -3,7 +3,7 @@ import { PrismaClient } from "../generated/prisma/client.js";
 
 const prisma = new PrismaClient();
 
-export const protectedRoute = (req, res, next) => {
+export const protectedRoute = async (req, res, next) => {
 	try {
 		const token = req.cookies.jwt;
 
@@ -13,7 +13,7 @@ export const protectedRoute = (req, res, next) => {
 
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-		const user = prisma.user.findUnique({
+		const user = await prisma.user.findUnique({
 			where: { id: decoded.userId },
 		});
 
