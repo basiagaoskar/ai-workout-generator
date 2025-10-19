@@ -6,6 +6,8 @@ import HomeButton from "../../components/HomeButton";
 import SummaryStep from "./Steps/SummaryStep";
 import NormalStep from "./Steps/NormalStep";
 
+import { useWorkoutStore } from "../../store/useWorkoutStore";
+
 const steps = ["Goal", "Gender", "Experience", "Equipment", "Frequency", "Summary"];
 
 const stepData = {
@@ -64,6 +66,8 @@ function WorkoutGenerator() {
 		Frequency: null,
 	});
 
+	const { generateWorkout, isGeneratingWorkout } = useWorkoutStore();
+
 	const handleBack = () => {
 		setCurrentStep(currentStep - 1);
 	};
@@ -85,7 +89,7 @@ function WorkoutGenerator() {
 	};
 
 	const handleGenerate = () => {
-		setIsGenerating(true);
+		generateWorkout(formData);
 	};
 
 	const renderStepContent = () => {
@@ -93,7 +97,7 @@ function WorkoutGenerator() {
 		if (isLastStep) {
 			return (
 				<>
-					<SummaryStep formData={formData} isGenerating={isGenerating} handleGenerate={handleGenerate} stepData={stepData} />
+					<SummaryStep formData={formData} isGenerating={isGeneratingWorkout} handleGenerate={handleGenerate} stepData={stepData} />
 					{isLastStep && (
 						<button onClick={handleBack} className="btn btn-outline btn-secondary w-full max-w-4xl mt-12">
 							Back to Steps
