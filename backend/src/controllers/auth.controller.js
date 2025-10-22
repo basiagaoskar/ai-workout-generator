@@ -1,9 +1,9 @@
-import { verifyAuth, registerUser, authenticateUser, clearAuthCookie } from "../services/auth.service.js";
+import { verifyAuth, registerUser, authenticateUser, clearAuthCookie, updateUserService } from "../services/auth.service.js";
 import { setJwtCookie } from "../utils/jwt.js";
 
 export const checkAuth = async (req, res) => {
 	try {
-		const user = await verifyAuth(req.cookies);
+		const user = await verifyAuth(req.user);
 		res.status(200).json(user);
 	} catch (error) {
 		res.status(401).json({ message: error.message });
@@ -22,9 +22,9 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
 	try {
-		const { loggedInUser, token } = await authenticateUser(req.body);
+		const { createdUser, token } = await authenticateUser(req.body);
 		setJwtCookie(res, token);
-		res.status(200).json(loggedInUser);
+		res.status(200).json(createdUser);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -33,7 +33,16 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
 	try {
 		clearAuthCookie(res);
-		res.status(200).json({message: "Logged out successfully"});
+		res.status(200).json();
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const updateUser = async (req, res) => {
+	try {
+		const updatedUser = await updateUserService(req.user.id, req.body);
+		res.status(200).json(updatedUser);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

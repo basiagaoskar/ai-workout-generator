@@ -6,37 +6,11 @@ import { generateToken, clearJwtCookie } from "../utils/jwt.js";
 
 const prisma = new PrismaClient();
 
-export const verifyAuth = async (cookies) => {
-	const token = cookies?.jwt;
-
-	if (!token) {
-		return null;
-	}
-
-	const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-	const user = await prisma.user.findUnique({
-		where: { id: decoded.userId },
-		select: {
-			id: true,
-			firstName: true,
-			lastName: true,
-			email: true,
-		},
-	});
-
+export const verifyAuth = async (user) => {
 	if (!user) {
 		throw new Error("User not found");
 	}
-
-	return {
-		user: {
-			id: user.id,
-			firstName: user.firstName,
-			lastName: user.lastName,
-			email: user.email,
-		},
-	};
+	return user;
 };
 
 export const registerUser = async (userData) => {
@@ -70,13 +44,10 @@ export const registerUser = async (userData) => {
 
 	const token = generateToken(newUser.id);
 
+	const { passwordHash, ...userWithoutPassword } = newUser;
+
 	return {
-		createdUser: {
-			id: newUser.id,
-			firstName: newUser.firstName,
-			lastName: newUser.lastName,
-			email: newUser.email,
-		},
+		createdUser: userWithoutPassword,
 		token: token,
 	};
 };
@@ -103,17 +74,33 @@ export const authenticateUser = async (loginData) => {
 
 	const token = generateToken(user.id);
 
+	const { passwordHash, ...userWithoutPassword } = user;
+
 	return {
-		loggedInUser: {
-			id: user.id,
-			firstName: user.firstName,
-			lastName: user.lastName,
-			email: user.email,
-		},
+		createdUser: userWithoutPassword,
 		token: token,
 	};
 };
 
 export const clearAuthCookie = async (res) => {
 	clearJwtCookie(res);
+};
+
+export const updateUserService = async (userId, data) => {
+	const { goal, gender, experience, equipment, frequency } = data;
+
+	const updatedUser = await prisma.user.update({
+		where: { id: userId },
+		data: {
+			fitnessGoal: goal || null,
+			gender: gender || null,
+			experienceLevel: experience || null,
+			availableEquipment: equipment || null,
+			trainingFrequency: frequency || null,
+		},
+	});
+
+	const { passwordHash, ...userWithoutPassword } = updatedUser;
+
+	return userWithoutPassword;
 };

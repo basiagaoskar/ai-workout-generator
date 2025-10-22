@@ -7,7 +7,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { workoutGeneratorSteps } from "../../data/workoutGeneratorConfig";
 
 function Account() {
-	const { authUser, isSavingPrefs, isChangingPass } = useAuthStore();
+	const { authUser, isSavingPrefs, isChangingPass, updateUser } = useAuthStore();
 
 	const [activeTab, setActiveTab] = useState("prefs");
 	const [prefsData, setPrefsData] = useState({
@@ -27,11 +27,11 @@ function Account() {
 	useEffect(() => {
 		if (authUser) {
 			setPrefsData({
-				goal: authUser.goal || "",
+				goal: authUser.goal || authUser.fitnessGoal || "",
 				gender: authUser.gender || "",
-				experience: authUser.experience || "",
-				equipment: authUser.equipment || "",
-				frequency: authUser.frequency || "",
+				experience: authUser.experienceLevel || "",
+				equipment: authUser.availableEquipment || "",
+				frequency: authUser.trainingFrequency || "",
 			});
 		}
 	}, [authUser]);
@@ -48,8 +48,7 @@ function Account() {
 
 	const handlePrefsSubmit = async (e) => {
 		e.preventDefault();
-
-		console.log(prefsData);
+		updateUser(prefsData);
 	};
 
 	const handlePasswordSubmit = async (e) => {

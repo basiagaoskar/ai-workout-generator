@@ -15,7 +15,7 @@ export const useAuthStore = create((set) => ({
 	checkAuth: async () => {
 		try {
 			const res = await axiosInstance.get("/auth/check");
-			set({ authUser: res.data.user, isCheckingAuth: false });
+			set({ authUser: res.data, isCheckingAuth: false });
 		} catch (error) {
 			if (error.response?.status === 401) {
 				toast.error(error.response.data?.message);
@@ -54,9 +54,35 @@ export const useAuthStore = create((set) => ({
 		try {
 			await axiosInstance.post("/auth/logout");
 			set({ authUser: null });
-			toast.success("Logged in successfully!");
+			toast.success("Logged out successfully!");
 		} catch (error) {
 			toast.error(error.response.data.message);
+		}
+	},
+
+	updateUser: async (data) => {
+		set({ isSavingPrefs: true });
+		try {
+			const res = await axiosInstance.post("/auth/update-user", data);
+			set({ authUser: res.data });
+			toast.success("Information saved successfully!");
+		} catch (error) {
+			toast.error(error.response.data.message);
+		} finally {
+			set({ isSavingPrefs: false });
+		}
+	},
+
+	changePassword: async (data) => {
+		set({ isChangingPass: true });
+		try {
+			const res = await axiosInstance.post("/auth/change-password", data);
+			set({ authUser: res.data });
+			toast.success("Password changed successfully!");
+		} catch (error) {
+			toast.error(error.response.data.message);
+		} finally {
+			set({ isChangingPass: false });
 		}
 	},
 }));
