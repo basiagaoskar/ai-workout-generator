@@ -23,12 +23,12 @@ function Navbar() {
 	const renderMenuItem = (item) => {
 		if (item.submenu) {
 			return (
-				<li key={item.id} className="font-bold text-xl">
+				<li key={item.id} className="font-bold">
 					<details>
-						<summary>{item.title}</summary>
+						<summary className=" text-xl">{item.title}</summary>
 						<ul className="p-2 min-w-[230px] bg-base-200 rounded-xl shadow-lg">
 							{item.submenu.map((subItem) => (
-								<li key={subItem.id} className="text-md">
+								<li key={subItem.id} className="text-base">
 									<Link to={subItem.path}>{subItem.title}</Link>
 								</li>
 							))}

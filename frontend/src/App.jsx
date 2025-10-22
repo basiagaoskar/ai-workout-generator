@@ -10,6 +10,7 @@ import SignupForm from "./pages/Auth/SignupForm";
 
 import Home from "./pages/Home/Home";
 import WorkoutGenerator from "./pages/Generator/WorkoutGenerator";
+import Account from "./pages/Account/Account";
 
 import NotFound from "./pages/ErrorPage/NotFound";
 
@@ -59,6 +60,14 @@ function App() {
 					element={
 						<RouteGuard mode="protected">
 							<WorkoutGenerator />
+						</RouteGuard>
+					}
+				/>
+				<Route
+					path="/account"
+					element={
+						<RouteGuard mode="protected">
+							<Account />
 						</RouteGuard>
 					}
 				/>
