@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Dumbbell, Target, Home, Calendar, Mars, Venus, ArrowLeft, House } from "lucide-react";
 
-import HomeButton from "../../components/HomeButton";
 import SummaryStep from "./Steps/SummaryStep";
 import NormalStep from "./Steps/NormalStep";
+import DisplayWorkout from "../../components/DisplayWorkout";
 
 import { useWorkoutStore } from "../../store/useWorkoutStore";
 
@@ -56,7 +56,6 @@ const stepData = {
 
 function WorkoutGenerator() {
 	const [currentStep, setCurrentStep] = useState(1);
-	const [isGenerating, setIsGenerating] = useState(false);
 
 	const [formData, setFormData] = useState({
 		Goal: null,
@@ -66,7 +65,7 @@ function WorkoutGenerator() {
 		Frequency: null,
 	});
 
-	const { generateWorkout, isGeneratingWorkout } = useWorkoutStore();
+	const { generateWorkout, currentWorkout, isGeneratingWorkout } = useWorkoutStore();
 
 	const handleBack = () => {
 		setCurrentStep(currentStep - 1);
@@ -99,7 +98,7 @@ function WorkoutGenerator() {
 				<>
 					<SummaryStep formData={formData} isGenerating={isGeneratingWorkout} handleGenerate={handleGenerate} stepData={stepData} />
 					{isLastStep && (
-						<button onClick={handleBack} className="btn btn-outline btn-secondary w-full max-w-4xl mt-12">
+						<button onClick={handleBack} className="btn btn-outline btn-secondary w-full max-w-4xl mt-12" disabled={isGeneratingWorkout}>
 							Back to Steps
 						</button>
 					)}
@@ -134,12 +133,18 @@ function WorkoutGenerator() {
 
 			<div className="container mx-auto px-4 max-w-5xl ">
 				<div className="flex flex-col items-center justify-center p-5 sm:p-18 bg-base-300 rounded-2xl shadow-xl">
-					<progress
-						className="progress progress-primary w-50 sm:w-sm mb-15 transition-all duration-500 ease-in-out"
-						value={String((currentStep / steps.length) * 100)}
-						max="100"
-					/>
-					<div className="text-center p-8 bg-base-200 rounded-xl">{renderStepContent()}</div>
+					{currentWorkout ? (
+						<DisplayWorkout workout={currentWorkout} />
+					) : (
+						<>
+							<progress
+								className="progress progress-primary w-50 sm:w-sm mb-15 transition-all duration-500 ease-in-out"
+								value={String((currentStep / steps.length) * 100)}
+								max="100"
+							/>
+							<div className="text-center p-8 bg-base-200 rounded-xl">{renderStepContent()}</div>
+						</>
+					)}
 				</div>
 			</div>
 		</div>
