@@ -1,5 +1,4 @@
-import bycrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 import { PrismaClient } from "../generated/prisma/client.js";
 import { generateToken, clearJwtCookie } from "../utils/jwt.js";
@@ -31,7 +30,7 @@ export const registerUser = async (userData) => {
 		throw new Error("User with this email already exists");
 	}
 
-	const hashedPassword = await bycrypt.hash(password, 10);
+	const hashedPassword = await bcrypt.hash(password, 10);
 
 	const newUser = await prisma.user.create({
 		data: {
@@ -66,7 +65,7 @@ export const authenticateUser = async (loginData) => {
 		throw new Error("Invalid email or password");
 	}
 
-	const isPasswordValid = await bycrypt.compare(password, user.passwordHash);
+	const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
 	if (!isPasswordValid) {
 		throw new Error("Invalid email or password");
@@ -98,6 +97,38 @@ export const updateUserService = async (userId, data) => {
 			availableEquipment: equipment || null,
 			trainingFrequency: frequency || null,
 		},
+	});
+
+	const { passwordHash, ...userWithoutPassword } = updatedUser;
+
+	return userWithoutPassword;
+};
+
+export const updatePasswordService = async (userId, data) => {
+	const { oldPassword, newPassword } = data;
+
+	if (!oldPassword || !newPassword) {
+		throw new Error("Old and new passwords are required");
+	}
+
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+	});
+
+	if (!user) {
+		throw new Error("User not found");
+	}
+
+	const isPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash);
+	if (!isPasswordValid) {
+		throw new Error("Invalid password");
+	}
+
+	const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+	const updatedUser = await prisma.user.update({
+		where: { id: userId },
+		data: { passwordHash: hashedPassword },
 	});
 
 	const { passwordHash, ...userWithoutPassword } = updatedUser;

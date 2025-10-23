@@ -1,4 +1,11 @@
-import { verifyAuth, registerUser, authenticateUser, clearAuthCookie, updateUserService } from "../services/auth.service.js";
+import {
+	verifyAuth,
+	registerUser,
+	authenticateUser,
+	clearAuthCookie,
+	updateUserService,
+	updatePasswordService,
+} from "../services/auth.service.js";
 import { setJwtCookie } from "../utils/jwt.js";
 
 export const checkAuth = async (req, res) => {
@@ -42,6 +49,15 @@ export const logout = async (req, res) => {
 export const updateUser = async (req, res) => {
 	try {
 		const updatedUser = await updateUserService(req.user.id, req.body);
+		res.status(200).json(updatedUser);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const updatePassword = async (req, res) => {
+	try {
+		const updatedUser = await updatePasswordService(req.user.id, req.body);
 		res.status(200).json(updatedUser);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
