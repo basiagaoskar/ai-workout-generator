@@ -33,7 +33,9 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 	`;
 
 	const response = await ai.models.generateContent({
+		//if one model is overloaded try different one
 		model: "gemini-2.5-flash",
+		// model: "gemini-2.0-flash",
 		contents: prompt,
 	});
 
@@ -79,4 +81,30 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 	} catch (e) {
 		throw new Error("AI returned invalid data format");
 	}
+};
+
+export const getAllWorkouts = async (userId, page = 1, limit = 10) => {
+	const pageNum = parseInt(page);
+	const limitNum = parseInt(limit);
+	const skip = (pageNum - 1) * limitNum;
+
+	const workouts = await prisma.workoutPlan.findMany({
+		where: {
+			userId,
+		},
+		orderBy: {
+			createdAt: "asc",
+		},
+		include: {
+			days: {
+				include: {
+					exercises: true,
+				},
+			},
+		},
+		skip,
+		take: limitNum,
+	});
+
+	return workouts;
 };
