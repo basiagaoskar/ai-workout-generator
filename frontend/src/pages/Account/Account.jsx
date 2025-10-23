@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { User, Mail, Save, Loader2, KeyRound } from "lucide-react";
+import toast from "react-hot-toast";
 
 import Navbar from "../../components/Navbar";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -7,7 +8,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { workoutGeneratorSteps } from "../../data/workoutGeneratorConfig";
 
 function Account() {
-	const { authUser, isSavingPrefs, isChangingPass, updateUser } = useAuthStore();
+	const { authUser, isSavingPrefs, isChangingPass, updateUser, changePassword } = useAuthStore();
 
 	const [activeTab, setActiveTab] = useState("prefs");
 	const [prefsData, setPrefsData] = useState({
@@ -19,7 +20,7 @@ function Account() {
 	});
 
 	const [passData, setPassData] = useState({
-		currentPassword: "",
+		oldPassword: "",
 		newPassword: "",
 		confirmPassword: "",
 	});
@@ -54,16 +55,16 @@ function Account() {
 	const handlePasswordSubmit = async (e) => {
 		e.preventDefault();
 		if (passData.newPassword !== passData.confirmPassword) {
-			console.log("New passwords do not match!");
+			toast.error("New passwords do not match!");
 			return;
 		}
 		if (passData.newPassword.length < 8) {
-			console.log("Password must be at least 8 characters long.");
+			toast.error("Password must be at least 8 characters long.");
 			return;
 		}
 
-		console.log(passData);
-		setPassData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+		changePassword(passData);
+		setPassData({ oldPassword: "", newPassword: "", confirmPassword: "" });
 	};
 
 	if (!authUser) {
@@ -157,9 +158,9 @@ function Account() {
 										</div>
 										<input
 											type="password"
-											name="currentPassword"
+											name="oldPassword"
 											placeholder="••••••••"
-											value={passData.currentPassword}
+											value={passData.oldPassword}
 											onChange={handlePassChange}
 											className="input input-bordered"
 											required
