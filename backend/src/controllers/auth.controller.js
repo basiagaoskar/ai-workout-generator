@@ -5,6 +5,7 @@ import {
 	clearAuthCookie,
 	updateUserService,
 	updatePasswordService,
+	deleteAccountService,
 } from "../services/auth.service.js";
 import { setJwtCookie } from "../utils/jwt.js";
 
@@ -59,6 +60,15 @@ export const updatePassword = async (req, res) => {
 	try {
 		const updatedUser = await updatePasswordService(req.user.id, req.body);
 		res.status(200).json(updatedUser);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const deleteAccount = async (req, res) => {
+	try {
+		await deleteAccountService(req.user.id);
+		res.status(200).json();
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

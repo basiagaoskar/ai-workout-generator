@@ -8,7 +8,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { workoutGeneratorSteps } from "../../data/workoutGeneratorConfig";
 
 function Account() {
-	const { authUser, isSavingPrefs, isChangingPass, updateUser, changePassword } = useAuthStore();
+	const { authUser, isSavingPrefs, isChangingPass, updateUser, changePassword, deleteAccount } = useAuthStore();
 
 	const [activeTab, setActiveTab] = useState("prefs");
 	const [prefsData, setPrefsData] = useState({
@@ -199,13 +199,24 @@ function Account() {
 										/>
 									</label>
 
-									<div className="flex justify-start mt-4">
+									<div className="flex justify-start">
 										<button type="submit" className="btn btn-primary" disabled={isChangingPass}>
 											{isChangingPass ? <Loader2 className="animate-spin" /> : <KeyRound className="w-4 h-4" />}
 											Change Password
 										</button>
 									</div>
 								</form>
+
+								<h2 className="card-title text-2xl text-error mt-15">Delete Account</h2>
+								<p className="text-sm mb-2">
+									This will permanently delete your account and all saved preferences.
+									<br /> This action cannot be undone.
+								</p>
+								<div className="flex justify-start">
+									<button type="submit" className="btn btn-error" onClick={() => deleteAccount()}>
+										Delete Account
+									</button>
+								</div>
 							</>
 						)}
 					</div>
