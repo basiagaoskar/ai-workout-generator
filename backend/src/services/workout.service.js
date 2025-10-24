@@ -88,23 +88,42 @@ export const getAllWorkouts = async (userId, page = 1, limit = 10) => {
 	const limitNum = parseInt(limit);
 	const skip = (pageNum - 1) * limitNum;
 
-	const workouts = await prisma.workoutPlan.findMany({
-		where: {
-			userId,
-		},
-		orderBy: {
-			createdAt: "asc",
-		},
-		include: {
-			days: {
-				include: {
-					exercises: true,
+	try {
+		const [workoutPlans, totalCount] = await Promise.all([
+			prisma.workoutPlan.findMany({
+				where: {
+					userId,
 				},
-			},
-		},
-		skip,
-		take: limitNum,
-	});
+				orderBy: {
+					createdAt: "desc",
+				},
+				skip,
+				take: limitNum,
+				include: {
+					days: {
+						orderBy: {
+							dayNumber: "asc",
+						},
+						include: {
+							exercises: true,
+						},
+					},
+				},
+			}),
+			prisma.workoutPlan.count({
+				where: {
+					userId: userId,
+				},
+			}),
+		]);
 
-	return workouts;
+		return {
+			data: workoutPlans,
+			totalPages: Math.ceil(totalCount / limitNum),
+			currentPage: pageNum,
+			totalCount: totalCount,
+		};
+	} catch (error) {
+		throw new Error("Could not retrieve workout plans");
+	}
 };
