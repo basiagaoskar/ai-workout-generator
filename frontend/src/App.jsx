@@ -17,6 +17,7 @@ import NotFound from "./pages/ErrorPage/NotFound";
 
 import { useAuthStore } from "./store/useAuthStore";
 import RouteGuard from "./components/router/RouteGuard";
+import WorkoutDetails from "./pages/WorkoutDetails/WorkoutDetails";
 
 function App() {
 	const { checkAuth, isCheckingAuth } = useAuthStore();
@@ -85,6 +86,14 @@ function App() {
 					element={
 						<RouteGuard mode="protected">
 							<Workouts />
+						</RouteGuard>
+					}
+				/>
+				<Route
+					path="/workout/:id"
+					element={
+						<RouteGuard mode="protected">
+							<WorkoutDetails />
 						</RouteGuard>
 					}
 				/>

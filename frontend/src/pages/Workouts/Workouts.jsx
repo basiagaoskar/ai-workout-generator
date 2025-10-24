@@ -40,10 +40,10 @@ function Workouts() {
 						<div className="space-y-4">
 							{workouts.map((plan) => (
 								<div key={plan.id} className="card bg-base-200 shadow-md">
-									<div className="card-body flex-row justify-between items-center">
+									<div className="card-body sm:flex-row justify-between items-center">
 										<div>
-											<h2 className="card-title text-xl flex items-center gap-2">
-												<ListChecks className="w-5 h-5 text-primary" />
+											<h2 className="card-title text-base sm:text-xl flex items-center gap-2">
+												<ListChecks className="w-5 h-5 text-primary flex-shrink-0" />
 												{plan.planName}
 											</h2>
 											<p className="text-sm opacity-70 flex items-center gap-1 mt-1">
@@ -51,7 +51,9 @@ function Workouts() {
 												Created: {new Date(plan.createdAt).toLocaleDateString()}
 											</p>
 										</div>
-										<button className="btn btn-sm btn-outline btn-primary">View Details</button>
+										<Link to={`/workout/${plan.id}`} className="btn btn-sm btn-outline btn-primary mt-5 sm:mt-0">
+											View Details
+										</Link>
 									</div>
 								</div>
 							))}

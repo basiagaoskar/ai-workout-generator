@@ -127,3 +127,32 @@ export const getAllWorkouts = async (userId, page = 1, limit = 10) => {
 		throw new Error("Could not retrieve workout plans");
 	}
 };
+
+export const getWorkoutById = async (workoutId, userId) => {
+	try {
+		const workoutPlan = await prisma.workoutPlan.findUnique({
+			where: {
+				id: parseInt(workoutId),
+				userId: userId,
+			},
+			include: {
+				days: {
+					orderBy: {
+						dayNumber: "asc",
+					},
+					include: {
+						exercises: true,
+					},
+				},
+			},
+		});
+
+		if (!workoutPlan) {
+			throw new Error("Could not find workout plan");
+		}
+
+		return workoutPlan;
+	} catch (error) {
+		throw new Error("Could not retrieve workout plan");
+	}
+};

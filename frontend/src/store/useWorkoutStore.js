@@ -5,6 +5,7 @@ import { axiosInstance } from "../lib/axios";
 export const useWorkoutStore = create((set) => ({
 	currentWorkout: null,
 	workouts: [],
+	selectedWorkout: null,
 
 	currentPage: 1,
 	totalPages: 1,
@@ -12,6 +13,7 @@ export const useWorkoutStore = create((set) => ({
 
 	isGeneratingWorkout: false,
 	isLoadingWorkouts: false,
+	isLoadingSelectedWorkout: false,
 
 	generateWorkout: async (data) => {
 		set({ isGeneratingWorkout: true, currentWorkout: null });
@@ -44,6 +46,18 @@ export const useWorkoutStore = create((set) => ({
 			set({ workouts: [], totalPages: 1, currentPage: 1, totalWorkouts: 0 });
 		} finally {
 			set({ isLoadingWorkouts: false });
+		}
+	},
+
+	fetchWorkoutById: async (id) => {
+		set({ isLoadingSelectedWorkout: true, selectedWorkout: null });
+		try {
+			const res = await axiosInstance.get(`/workout/one/${id}`);
+			set({ selectedWorkout: res.data });
+		} catch (error) {
+			toast.error(error.response?.data?.message || "Failed to fetch workout");
+		} finally {
+			set({ isLoadingSelectedWorkout: false });
 		}
 	},
 }));
