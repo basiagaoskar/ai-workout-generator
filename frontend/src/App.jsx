@@ -16,11 +16,14 @@ import Workouts from "./pages/Workouts/Workouts";
 import NotFound from "./pages/ErrorPage/NotFound";
 
 import { useAuthStore } from "./store/useAuthStore";
+import { useThemeStore } from "./store/useThemeStore";
+
 import RouteGuard from "./components/router/RouteGuard";
 import WorkoutDetails from "./pages/WorkoutDetails/WorkoutDetails";
 
 function App() {
 	const { checkAuth, isCheckingAuth } = useAuthStore();
+	const { theme } = useThemeStore();
 
 	useEffect(() => {
 		checkAuth();
@@ -36,71 +39,73 @@ function App() {
 
 	return (
 		<>
-			<Routes>
-				<Route
-					path="/"
-					element={
-						<RouteGuard mode="guest">
-							<Start />
-						</RouteGuard>
-					}
-				/>
-				<Route
-					path="/auth"
-					element={
-						<RouteGuard mode="guest">
-							<Auth />
-						</RouteGuard>
-					}
-				>
-					<Route index element={<LoginForm />} />
-					<Route path="login" element={<LoginForm />} />
-					<Route path="signup" element={<SignupForm />} />
-				</Route>
-				<Route
-					path="/generate-workout"
-					element={
-						<RouteGuard mode="protected">
-							<WorkoutGenerator />
-						</RouteGuard>
-					}
-				/>
-				<Route
-					path="/account"
-					element={
-						<RouteGuard mode="protected">
-							<Account />
-						</RouteGuard>
-					}
-				/>
-				<Route
-					path="/home"
-					element={
-						<RouteGuard mode="protected">
-							<Home />
-						</RouteGuard>
-					}
-				/>
-				<Route
-					path="/workouts"
-					element={
-						<RouteGuard mode="protected">
-							<Workouts />
-						</RouteGuard>
-					}
-				/>
-				<Route
-					path="/workout/:id"
-					element={
-						<RouteGuard mode="protected">
-							<WorkoutDetails />
-						</RouteGuard>
-					}
-				/>
-				<Route path="*" element={<NotFound />} />
-			</Routes>
+			<div data-theme={theme}>
+				<Routes>
+					<Route
+						path="/"
+						element={
+							<RouteGuard mode="guest">
+								<Start />
+							</RouteGuard>
+						}
+					/>
+					<Route
+						path="/auth"
+						element={
+							<RouteGuard mode="guest">
+								<Auth />
+							</RouteGuard>
+						}
+					>
+						<Route index element={<LoginForm />} />
+						<Route path="login" element={<LoginForm />} />
+						<Route path="signup" element={<SignupForm />} />
+					</Route>
+					<Route
+						path="/generate-workout"
+						element={
+							<RouteGuard mode="protected">
+								<WorkoutGenerator />
+							</RouteGuard>
+						}
+					/>
+					<Route
+						path="/account"
+						element={
+							<RouteGuard mode="protected">
+								<Account />
+							</RouteGuard>
+						}
+					/>
+					<Route
+						path="/home"
+						element={
+							<RouteGuard mode="protected">
+								<Home />
+							</RouteGuard>
+						}
+					/>
+					<Route
+						path="/workouts"
+						element={
+							<RouteGuard mode="protected">
+								<Workouts />
+							</RouteGuard>
+						}
+					/>
+					<Route
+						path="/workout/:id"
+						element={
+							<RouteGuard mode="protected">
+								<WorkoutDetails />
+							</RouteGuard>
+						}
+					/>
+					<Route path="*" element={<NotFound />} />
+				</Routes>
 
-			<Toaster />
+				<Toaster />
+			</div>
 		</>
 	);
 }

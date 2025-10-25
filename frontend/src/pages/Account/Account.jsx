@@ -4,11 +4,13 @@ import toast from "react-hot-toast";
 
 import Navbar from "../../components/Navbar";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useThemeStore } from "../../store/useThemeStore";
 
 import { workoutGeneratorSteps } from "../../data/workoutGeneratorConfig";
 
 function Account() {
 	const { authUser, isSavingPrefs, isChangingPass, updateUser, changePassword, deleteAccount } = useAuthStore();
+	const { theme, setTheme } = useThemeStore();
 
 	const [activeTab, setActiveTab] = useState("prefs");
 	const [prefsData, setPrefsData] = useState({
@@ -24,6 +26,8 @@ function Account() {
 		newPassword: "",
 		confirmPassword: "",
 	});
+
+	const themes = ["light", "dark", "cupcake", "synthwave", "night", "dracula", "aqua", "garden"];
 
 	useEffect(() => {
 		if (authUser) {
@@ -52,6 +56,11 @@ function Account() {
 		updateUser(prefsData);
 	};
 
+	const handleThemeChange = (e) => {
+		const newTheme = e.target.value;
+		setTheme(newTheme);
+	};
+
 	const handlePasswordSubmit = async (e) => {
 		e.preventDefault();
 		if (passData.newPassword !== passData.confirmPassword) {
@@ -72,12 +81,12 @@ function Account() {
 	}
 
 	return (
-		<div className="container mx-auto">
+		<div className="container mx-auto min-h-screen">
 			<Navbar />
 			<div className="max-w-4xl mx-auto p-4 md:p-8">
 				<h1 className="text-4xl font-bold mb-4">My Account</h1>
 
-				<div className="bg-base-200 shadow-md mb-8">
+				<div className="bg-base-300 shadow-md mb-8">
 					<div className="card-body">
 						<div className="flex flex-col">
 							<div className="flex items-center gap-3 text-base">
@@ -108,7 +117,7 @@ function Account() {
 					</a>
 				</div>
 
-				<div className="card bg-base-200 shadow-md">
+				<div className="card bg-base-300 shadow-md">
 					<div className="card-body">
 						{activeTab === "prefs" && (
 							<>
@@ -138,13 +147,27 @@ function Account() {
 										</label>
 									))}
 
-									<div className="md:col-span-2 flex justify-start mt-4">
+									<div className="md:col-span-2 flex justify-start">
 										<button type="submit" className="btn btn-primary" disabled={isSavingPrefs}>
 											{isSavingPrefs ? <Loader2 className="animate-spin" /> : <Save className="w-4 h-4" />}
 											Save Preferences
 										</button>
 									</div>
 								</form>
+
+								<h2 className="card-title text-2xl mt-15">Fitness Appearance</h2>
+								<label className="form-control w-full max-w-sm">
+									<div className="label">
+										<span className="label-text">Select Theme</span>
+									</div>
+									<select className="select select-bordered" value={theme} onChange={handleThemeChange} data-choose-theme>
+										{themes.map((themeName) => (
+											<option key={themeName} value={themeName}>
+												{themeName.charAt(0).toUpperCase() + themeName.slice(1)}
+											</option>
+										))}
+									</select>
+								</label>
 							</>
 						)}
 
