@@ -20,14 +20,32 @@ const Home = () => {
 		<div className="container mx-auto ">
 			<Navbar />
 
-			<div className="max-w-4xl mx-auto p-4 md:p-8">
-				<h1 className="text-3xl sm:text-4xl font-bold mb-8">Welcome back, {authUser?.firstName}!</h1>
+			<div className="max-w-6xl mx-auto p-4 md:p-8">
+				<div className="hero bg-base-200 rounded-lg">
+					<div className="hero-content flex flex-col md:flex-row w-full items-center md:items-start">
+						<img src="/wolf.jpg" alt="Wolf picture" className="hidden md:block w-82 rounded-lg shadow-2xl object-cover" />
 
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-					<Link
-						to="/generate-workout"
-						className="card bg-base-200 hover:bg-primary text-primary-content transition-all duration-300"
-					>
+						<div className="w-full flex flex-col justify-center text-center md:text-left mx-5">
+							<h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {authUser?.firstName}!</h1>
+
+							<div className="stats stats-vertical sm:stats-horizontal md:stats-vertical shadow mt-6 bg-base-100 w-full sm:w-auto mx-auto md:mx-0">
+								<div className="stat">
+									<div className="stat-title">Total Workouts</div>
+									<div className="stat-value">{totalWorkouts}</div>
+								</div>
+								<div className="stat">
+									<div className="stat-title">Last workout date</div>
+									<div className="stat-value text-primary">
+										{recentWorkout ? new Date(recentWorkout.createdAt).toLocaleDateString() : "—"}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-8">
+					<Link to="/generate-workout" className="card bg-base-200 hover:bg-primary text-primary-content transition-all duration-300">
 						<div className="card-body items-center text-center">
 							<Sparkles className="w-12 h-12 mb-2" />
 							<h2 className="card-title text-2xl">Generate new workout</h2>
