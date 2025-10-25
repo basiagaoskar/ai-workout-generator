@@ -42,7 +42,7 @@ const Start = () => {
 				<section className="py-30">
 					<h2 className="text-4xl font-bold text-center mb-12">Key Features</h2>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-						<div className="card bg-base-200 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
+						<div className="card bg-base-300 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
 							<UserCog className="h-10 w-10 text-primary mb-4" />
 							<h3 className="text-2xl font-semibold mb-3">Hyper-Personalization</h3>
 							<p className="opacity-80">
@@ -51,7 +51,7 @@ const Start = () => {
 							</p>
 						</div>
 
-						<div className="card bg-base-200 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
+						<div className="card bg-base-300 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
 							<TrendingUp className="h-10 w-10 text-primary mb-4" />
 							<h3 className="text-2xl font-semibold mb-3">Maximized Efficiency</h3>
 							<p className="opacity-80">
@@ -60,7 +60,7 @@ const Start = () => {
 							</p>
 						</div>
 
-						<div className="card bg-base-200 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
+						<div className="card bg-base-300 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
 							<Zap className="h-10 w-10 text-primary mb-4" />
 							<h3 className="text-2xl font-semibold mb-3">Instant Generation</h3>
 							<p className="opacity-80">
@@ -105,7 +105,7 @@ const Start = () => {
 				</section>
 			</main>
 
-			<footer className="footer footer-center p-4 bg-base-200 text-base-content mt-12">
+			<footer className="footer footer-center p-4 bg-base-300 text-base-content mt-12">
 				<aside>
 					<p>Copyright © 2025 - All rights reserved by Gym Z AI</p>
 				</aside>
