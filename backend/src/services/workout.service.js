@@ -1,22 +1,60 @@
 import { GoogleGenAI } from "@google/genai";
-import { PrismaClient } from "../generated/prisma/client.js";
+import { PrismaClient } from "../generated/prisma/index.js";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const prisma = new PrismaClient();
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
+const getAvailableExercises = async (equipmentKey) => {
+	let equipmentFilter = [];
+
+	switch (equipmentKey) {
+		case "bodyweight":
+			equipmentFilter = ["bodyweight"];
+			break;
+		case "bands_only":
+			equipmentFilter = ["bodyweight", "bands_only"];
+			break;
+		case "home_weights":
+			equipmentFilter = ["bodyweight", "bands_only", "home_weights"];
+			break;
+		case "full_gym":
+			return prisma.exercise.findMany();
+		default:
+			equipmentFilter = ["bodyweight"];
+	}
+
+	return prisma.exercise.findMany({
+		where: {
+			equipment: {
+				hasSome: equipmentFilter,
+			},
+		},
+	});
+};
+
 export const generateWorkoutPlan = async (preferences, userId) => {
 	const { Goal, Gender, Experience, Equipment, Frequency } = preferences;
+
+	const availableExercises = await getAvailableExercises(Equipment);
+	if (availableExercises.length === 0) {
+		throw new Error("No exercises found for the selected equipment.");
+	}
+
+	const exerciseNames = availableExercises.map((ex) => ex.name);
 
 	const prompt = `
 		You are a fitness expert. Create a personalized training plan as a JSON object.
 		User is: ${Gender}, Level: ${Experience}.
 		Goal: ${Goal}.
-		Available equipment: ${Equipment}.
 		Training frequency: ${Frequency} days per week.
 
-		The response MUST be a JSON object only, without any additional text or markdown formatting. JSON format:
+		You MUST create the plan using ONLY exercises from this list:
+		[${exerciseNames.join(", ")}]
+
+		The response MUST be a JSON object only, without any additional text or markdown formatting.
+		The JSON format MUST be:
 		{
 			"planName": "Plan name (e.g., ${Goal} for ${Experience})",
 			"days": [
@@ -24,8 +62,8 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 					"day": 1,
 					"focus": "Focus of the day (e.g., Full Body, Upper Body)",
 					"exercises": [
-						{ "name": "Exercise name", "sets": 3, "reps": "8-12" },
-						{ "name": "Next exercise", "sets": 3, "reps": "10-15" }
+						{ "name": "Exercise name from list", "sets": 3, "reps": "8-12" },
+						{ "name": "Next exercise from list", "sets": 3, "reps": "10-15" }
 					]
 				}
 			]
@@ -59,11 +97,19 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 						dayNumber: day.day,
 						focus: day.focus,
 						exercises: {
-							create: day.exercises.map((exercise) => ({
-								name: exercise.name,
-								sets: exercise.sets,
-								reps: exercise.reps,
-							})),
+							create: day.exercises.map((exercise) => {
+								const exerciseRecord = availableExercises.find((ex) => ex.name === exercise.name);
+
+								if (!exerciseRecord) {
+									throw new Error(`AI returned an invalid exercise name: ${exercise.name}`);
+								}
+
+								return {
+									sets: exercise.sets,
+									reps: exercise.reps,
+									exerciseId: exerciseRecord.id,
+								};
+							}),
 						},
 					})),
 				},
@@ -71,7 +117,11 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 			include: {
 				days: {
 					include: {
-						exercises: true,
+						exercises: {
+							include: {
+								exercise: true,
+							},
+						},
 					},
 				},
 			},
@@ -79,7 +129,7 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 
 		return savedPlan;
 	} catch (e) {
-		throw new Error("AI returned invalid data format");
+		throw new Error("AI returned invalid data format or invalid exercise.");
 	}
 };
 
@@ -105,7 +155,11 @@ export const getAllWorkouts = async (userId, page = 1, limit = 10) => {
 							dayNumber: "asc",
 						},
 						include: {
-							exercises: true,
+							exercises: {
+								include: {
+									exercise: true,
+								},
+							},
 						},
 					},
 				},
@@ -141,7 +195,11 @@ export const getWorkoutById = async (workoutId, userId) => {
 						dayNumber: "asc",
 					},
 					include: {
-						exercises: true,
+						exercises: {
+							include: {
+								exercise: true,
+							},
+						},
 					},
 				},
 			},

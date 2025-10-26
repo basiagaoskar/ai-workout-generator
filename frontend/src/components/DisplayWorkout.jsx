@@ -31,7 +31,7 @@ function DisplayWorkout({ workout }) {
 										key={ex.id}
 										className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-base-100 rounded-lg hover:bg-base-300 transition-colors"
 									>
-										<span className="font-medium">{ex.name}</span>
+										<span className="font-medium">{ex.exercise.name}</span>
 										<span className="text-sm text-base-content/70 sm:ml-2">
 											{ex.reps.includes("min") || ex.reps.includes("seconds") ? (
 												<> {ex.reps}</>

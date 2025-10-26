@@ -39,6 +39,8 @@ model WorkoutPlan {
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   days      WorkoutDay[]
+
+  @@map("workout_plans")
 }
 
 model WorkoutDay {
@@ -48,13 +50,31 @@ model WorkoutDay {
   exercises WorkoutExercise[]
   plan      WorkoutPlan       @relation(fields: [planId], references: [id], onDelete: Cascade)
   planId    Int
+
+  @@map("workout_days")
 }
 
 model WorkoutExercise {
-  id    Int        @id @default(autoincrement())
-  name  String
-  sets  Int
-  reps  String
-  day   WorkoutDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
-  dayId Int
+  id          Int        @id @default(autoincrement())
+  sets        Int
+  reps        String
+  day         WorkoutDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  dayId       Int
+
+  exercise    Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId  Int
+
+  @@map("workout_exercises")
+}
+
+
+model Exercise {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique
+  targetMuscle      String?  @map("target_muscle") 
+  equipment         String[]
+
+  workoutExercises  WorkoutExercise[]
+
+  @@map("exercises")
 }
