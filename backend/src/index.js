@@ -2,7 +2,10 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
+import swaggerOptions from "./swaggerDef.js";
 import authRoutes from "./routes/auth.route.js";
 import workoutRoutes from "./routes/workout.route.js";
 
@@ -20,6 +23,9 @@ app.use(
 	})
 );
 
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", authRoutes);
 app.use("/workout", workoutRoutes);
 
