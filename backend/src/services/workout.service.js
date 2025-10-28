@@ -214,3 +214,42 @@ export const getWorkoutById = async (workoutId, userId) => {
 		throw new Error("Could not retrieve workout plan");
 	}
 };
+
+export const saveWorkoutSession = async (userId, data) => {
+	const { workoutDayId, startTime, endTime, loggedSets } = data;
+
+	try {
+		const finishedWorkout = await prisma.workoutSession.create({
+			data: {
+				userId,
+				workoutDayId,
+				startTime: new Date(startTime),
+				endTime: new Date(endTime),
+				loggedSets: {
+					create: loggedSets.map((set) => ({
+						setNumber: set.setNumber,
+						weight: set.weight,
+						reps: set.reps,
+						exerciseId: set.exerciseId,
+					})),
+				},
+			},
+			include: {
+				loggedSets: {
+					include: {
+						exercise: {
+							include: {
+								exercise: true,
+							},
+						},
+					},
+				},
+				workoutDay: true,
+			},
+		});
+
+		return finishedWorkout;
+	} catch (error) {
+		throw new Error("Failed to save workout session");
+	}
+};

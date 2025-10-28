@@ -1,4 +1,4 @@
-import { generateWorkoutPlan, getAllWorkouts, getWorkoutById } from "../services/workout.service.js";
+import { generateWorkoutPlan, getAllWorkouts, getWorkoutById, saveWorkoutSession } from "../services/workout.service.js";
 
 export const generateWorkout = async (req, res) => {
 	try {
@@ -33,3 +33,14 @@ export const getOneWorkout = async (req, res) => {
 		res.status(404).json({ message: error.message });
 	}
 };
+
+export const saveWorkout = async (req, res) => {
+	try {
+		const userId = req.user.id;
+		const session = await saveWorkoutSession(userId, req.body);
+		res.status(201).json(session);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+

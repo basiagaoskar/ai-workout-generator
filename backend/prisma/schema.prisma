@@ -28,6 +28,7 @@ model User {
   createdAt          DateTime @default(now()) @map("created_at")
 
   workoutPlans WorkoutPlan[]
+  workoutSessions    WorkoutSession[]
 
   @@map("users")
 }
@@ -51,6 +52,8 @@ model WorkoutDay {
   plan      WorkoutPlan       @relation(fields: [planId], references: [id], onDelete: Cascade)
   planId    Int
 
+  sessions  WorkoutSession[]
+
   @@map("workout_days")
 }
 
@@ -63,10 +66,11 @@ model WorkoutExercise {
 
   exercise    Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   exerciseId  Int
+  
+  loggedSets  LoggedSet[] // NOWE: Link do zarejestrowanych serii
 
   @@map("workout_exercises")
 }
-
 
 model Exercise {
   id                Int      @id @default(autoincrement())
@@ -77,4 +81,33 @@ model Exercise {
   workoutExercises  WorkoutExercise[]
 
   @@map("exercises")
+}
+
+model WorkoutSession {
+  id          Int       @id @default(autoincrement())
+  startTime   DateTime  @default(now())
+  endTime     DateTime?
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workoutDay  WorkoutDay @relation(fields: [workoutDayId], references: [id])
+  workoutDayId Int
+
+  loggedSets  LoggedSet[]
+
+  @@map("workout_sessions")
+}
+
+model LoggedSet {
+  id            Int             @id @default(autoincrement())
+  setNumber     Int
+  weight        Float           @default(0.0)
+  reps          Int             @default(0)
+  
+  session       WorkoutSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId     Int
+  
+  exercise      WorkoutExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId    Int
+
+  @@map("logged_sets")
 }
