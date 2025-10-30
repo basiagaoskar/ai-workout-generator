@@ -20,6 +20,7 @@ model User {
   lastName           String   @map("last_name")
   email              String   @unique
   passwordHash       String   @map("password_hash")
+  role               String   @default("USER")
   fitnessGoal        String?  @map("fitness_goal")
   gender             String?
   experienceLevel    String?  @map("experience_level")

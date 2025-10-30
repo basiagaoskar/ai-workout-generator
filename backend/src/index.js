@@ -7,6 +7,7 @@ import swaggerUi from "swagger-ui-express";
 
 import swaggerOptions from "./swaggerDef.js";
 import authRoutes from "./routes/auth.route.js";
+import adminRoutes from "./routes/admin.route.js";
 import workoutRoutes from "./routes/workout.route.js";
 
 const PORT = 3000;
@@ -27,6 +28,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", authRoutes);
+app.use("/admin", adminRoutes);
 app.use("/workout", workoutRoutes);
 
 app.listen(PORT, () => {
