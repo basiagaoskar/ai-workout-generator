@@ -23,8 +23,8 @@ export const getAllWorkoutPlans = async (req, res) => {
 		const page = req.query.page || 1;
 		const limit = req.query.limit || 10;
 
-		const workouts = await getAllGeneratedWorkoutPlans(userId, page, limit);
-		res.status(200).json(workouts);
+		const workoutPlans = await getAllGeneratedWorkoutPlans(userId, page, limit);
+		res.status(200).json(workoutPlans);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -68,7 +68,10 @@ export const getFinishedWorkout = async (req, res) => {
 export const getAllFinishedWorkouts = async (req, res) => {
 	try {
 		const userId = req.user.id;
-		const workouts = await getAllWorkouts(userId);
+		const page = req.query.page || 1;
+		const limit = req.query.limit || 10;
+
+		const workouts = await getAllWorkouts(userId, page, limit);
 		res.status(200).json(workouts);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

@@ -4,7 +4,6 @@ import { axiosInstance } from "../lib/axios";
 
 export const useWorkoutStore = create((set) => ({
 	currentWorkout: null,
-	workouts: [],
 
 	generatedWorkoutPlan: null,
 	selectedWorkoutDay: null,
@@ -13,9 +12,15 @@ export const useWorkoutStore = create((set) => ({
 	selectedWorkoutSession: null,
 	isLoadingWorkoutSession: false,
 
-	currentPage: 1,
-	totalPages: 1,
-	totalWorkouts: 0,
+	workoutPlans: [],
+	currentWorkoutPlansPage: 1,
+	totalWorkoutPlansPages: 1,
+	totalWorkoutPlans: 0,
+
+	finishedWorkouts: [],
+	currentWorkoutPage: 1,
+	totalWorkoutPages: 1,
+	totalWorkoutCount: 0,
 
 	isGeneratingWorkout: false,
 	isLoadingWorkouts: false,
@@ -36,20 +41,20 @@ export const useWorkoutStore = create((set) => ({
 
 	clearCurrentWorkout: () => set({ currentWorkout: null }),
 
-	fetchWorkouts: async (page = 1, limit = 8) => {
+	fetchWorkoutPlans: async (page = 1, limit = 8) => {
 		set({ isLoadingWorkouts: true });
 		try {
 			const res = await axiosInstance.get(`/workout/workout-plan/all?page=${page}&limit=${limit}`);
-			const { data, totalPages, currentPage, totalCount } = res.data;
+			const { data, totalWorkoutPlansPages, currentWorkoutPlansPage, totalWorkoutPlans } = res.data;
 			set({
-				workouts: data,
-				totalPages: totalPages,
-				currentPage: currentPage,
-				totalWorkouts: totalCount,
+				workoutPlans: data,
+				totalWorkoutPlansPages: totalWorkoutPlansPages,
+				currentWorkoutPlansPage: currentWorkoutPlansPage,
+				totalWorkoutPlans: totalWorkoutPlans,
 			});
 		} catch (error) {
 			toast.error(error.response?.data?.message || "Failed to fetch workouts.");
-			set({ workouts: [], totalPages: 1, currentPage: 1, totalWorkouts: 0 });
+			set({ workoutPlans: [], totalWorkoutPlansPages: 1, currentWorkoutPlansPage: 1, totalWorkoutPlans: 0 });
 		} finally {
 			set({ isLoadingWorkouts: false });
 		}
@@ -82,14 +87,22 @@ export const useWorkoutStore = create((set) => ({
 		}
 	},
 
-	fetchFinishedWorkouts: async () => {
+	fetchFinishedWorkouts: async (page = 1, limit = 8) => {
 		set({ isLoadingFinishedWorkouts: true });
 		try {
-			const res = await axiosInstance.get("/workout/finished-workout/all");
-			set({ finishedWorkouts: res.data });
+			const res = await axiosInstance.get(`/workout/finished-workout/all?page=${page}&limit=${limit}`);
+			const { data, totalWorkoutPages, currentWorkoutPage, totalWorkoutCount } = res.data;
+
+			set({
+				finishedWorkouts: data,
+				totalWorkoutPages: totalWorkoutPages,
+				currentWorkoutPage: currentWorkoutPage,
+				totalWorkoutCount: totalWorkoutCount,
+			});
 		} catch (error) {
+			console.log(error);
 			toast.error(error.response?.data?.message || "Failed to load finished workouts");
-			set({ finishedWorkouts: [] });
+			set({ finishedWorkouts: [], totalWorkoutPages: 1, currentWorkoutPage: 1, totalWorkoutCount: 0 });
 		} finally {
 			set({ isLoadingFinishedWorkouts: false });
 		}

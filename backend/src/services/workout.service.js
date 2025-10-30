@@ -133,7 +133,7 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 	}
 };
 
-export const getAllGeneratedWorkoutPlans = async (userId, page = 1, limit = 10) => {
+export const getAllGeneratedWorkoutPlans = async (userId, page = 1, limit = 8) => {
 	const pageNum = parseInt(page);
 	const limitNum = parseInt(limit);
 	const skip = (pageNum - 1) * limitNum;
@@ -173,9 +173,9 @@ export const getAllGeneratedWorkoutPlans = async (userId, page = 1, limit = 10) 
 
 		return {
 			data: workoutPlans,
-			totalPages: Math.ceil(totalCount / limitNum),
-			currentPage: pageNum,
-			totalCount: totalCount,
+			totalWorkoutPlansPages: Math.ceil(totalCount / limitNum),
+			currentWorkoutPlansPage: pageNum,
+			totalWorkoutPlans: totalCount,
 		};
 	} catch (error) {
 		throw new Error("Could not retrieve workout plans");
@@ -286,26 +286,44 @@ export const getFinishedWorkoutById = async (workoutId, userId) => {
 	}
 };
 
-export const getAllWorkouts = async (userId) => {
-	try {
-		const finishedWorkouts = await prisma.workoutSession.findMany({
-			where: {
-				userId: userId,
-			},
-			orderBy: {
-				startTime: "desc",
-			},
-			include: {
-				workoutDay: {
-					include: {
-						plan: true,
-					},
-				},
-				loggedSets: true,
-			},
-		});
+export const getAllWorkouts = async (userId, page = 1, limit = 8) => {
+	const pageNum = parseInt(page);
+	const limitNum = parseInt(limit);
+	const skip = (pageNum - 1) * limitNum;
 
-		return finishedWorkouts;
+	try {
+		const [finishedWorkouts, totalCount] = await Promise.all([
+			prisma.workoutSession.findMany({
+				where: {
+					userId: userId,
+				},
+				orderBy: {
+					startTime: "desc",
+				},
+				skip,
+				take: limitNum,
+				include: {
+					workoutDay: {
+						include: {
+							plan: true,
+						},
+					},
+					loggedSets: true,
+				},
+			}),
+			prisma.workoutSession.count({
+				where: {
+					userId: userId,
+				},
+			}),
+		]);
+
+		return {
+			data: finishedWorkouts,
+			totalWorkoutPages: Math.ceil(totalCount / limitNum),
+			currentWorkoutPage: pageNum,
+			totalWorkoutCount: totalCount,
+		};
 	} catch (error) {
 		throw new Error("Could not retrieve finished workouts");
 	}
