@@ -18,7 +18,7 @@ const navbarElements = [
 ];
 
 function Navbar() {
-	const { logout } = useAuthStore();
+	const { authUser, logout } = useAuthStore();
 
 	const renderMenuItem = (item) => {
 		if (item.submenu) {
@@ -62,7 +62,14 @@ function Navbar() {
 					</Link>
 				</div>
 				<div className="navbar-center hidden lg:flex">
-					<ul className="menu menu-horizontal space-x-10">{navbarElements.map(renderMenuItem)}</ul>
+					<ul className="menu menu-horizontal space-x-10">
+						{navbarElements.map(renderMenuItem)}
+						{authUser.role === "ADMIN" && (
+							<li key="4" className="font-bold text-xl">
+								<Link to="/admin">Admin Panel</Link>
+							</li>
+						)}
+					</ul>
 				</div>
 				<div className="navbar-end">
 					<button className="btn" onClick={logout}>

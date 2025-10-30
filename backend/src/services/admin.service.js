@@ -17,9 +17,26 @@ export const getUsers = async () => {
 				createdAt: true,
 			},
 		});
-        
+
 		return users;
 	} catch (error) {
 		res.status(500).json({ message: "Failed to load users" });
+	}
+};
+
+export const deleteUser = async (user) => {
+	const userId = parseInt(user);
+	if (!userId) {
+		return res.status(400).json({ message: "User ID is required" });
+	}
+
+	try {
+		await prisma.user.delete({
+			where: {
+				id: userId,
+			},
+		});
+	} catch (error) {
+		res.status(500).json({ message: "Failed to delete user" });
 	}
 };

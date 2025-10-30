@@ -17,6 +17,7 @@ import NewWorkout from "./pages/NewWorkout/NewWorkout";
 import AllFinishedWorkouts from "./pages/AllFinishedWorkouts/AllFinishedWorkouts";
 import FinishedWorkout from "./pages/FinishedWorkout/FinishedWorkout";
 
+import AdminPanel from "./pages/AdminPanel/AdminPanel";
 import NotFound from "./pages/ErrorPage/NotFound";
 
 import { useAuthStore } from "./store/useAuthStore";
@@ -24,6 +25,7 @@ import { useThemeStore } from "./store/useThemeStore";
 
 import ProtectedRoute from "./components/router/ProtectedRoute";
 import GuestRoute from "./components/router/GuestRoute";
+import AdminRoute from "./components/router/AdminRoute";
 
 function App() {
 	const { checkAuth, isCheckingAuth } = useAuthStore();
@@ -63,6 +65,9 @@ function App() {
 						<Route path="/workout/start/:dayId" element={<NewWorkout />} />
 						<Route path="/workouts" element={<AllFinishedWorkouts />} />
 						<Route path="/workout/:dayId" element={<FinishedWorkout />} />
+					</Route>
+					<Route element={<AdminRoute />}>
+						<Route path="/admin" element={<AdminPanel />} />
 					</Route>
 
 					<Route path="*" element={<NotFound />} />
