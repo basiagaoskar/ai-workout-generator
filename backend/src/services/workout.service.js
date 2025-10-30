@@ -133,7 +133,7 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 	}
 };
 
-export const getAllWorkouts = async (userId, page = 1, limit = 10) => {
+export const getAllGeneratedWorkoutPlans = async (userId, page = 1, limit = 10) => {
 	const pageNum = parseInt(page);
 	const limitNum = parseInt(limit);
 	const skip = (pageNum - 1) * limitNum;
@@ -182,7 +182,7 @@ export const getAllWorkouts = async (userId, page = 1, limit = 10) => {
 	}
 };
 
-export const getWorkoutById = async (workoutId, userId) => {
+export const getWorkoutPlanById = async (workoutId, userId) => {
 	try {
 		const workoutPlan = await prisma.workoutPlan.findUnique({
 			where: {
@@ -212,6 +212,102 @@ export const getWorkoutById = async (workoutId, userId) => {
 		return workoutPlan;
 	} catch (error) {
 		throw new Error("Could not retrieve workout plan");
+	}
+};
+
+export const getWorkoutDayById = async (workoutDayId, userId) => {
+	try {
+		const workoutDay = await prisma.workoutDay.findUnique({
+			where: {
+				id: parseInt(workoutDayId),
+			},
+			include: {
+				exercises: {
+					orderBy: { id: "asc" },
+					include: {
+						exercise: true,
+					},
+				},
+				plan: {
+					select: {
+						userId: true,
+					},
+				},
+			},
+		});
+
+		if (!workoutDay) {
+			throw new Error("Workout day not found.");
+		}
+
+		if (workoutDay.plan.userId !== userId) {
+			throw new Error("Unauthorized to access this workout day.");
+		}
+
+		const { plan, ...rest } = workoutDay;
+		return rest;
+	} catch (error) {
+		throw new Error("Failed to fetch workout day: " + error.message);
+	}
+};
+
+export const getFinishedWorkoutById = async (workoutId, userId) => {
+	try {
+		const finishedWorkout = await prisma.workoutSession.findUnique({
+			where: {
+				id: parseInt(workoutId),
+				userId: userId,
+			},
+			include: {
+				loggedSets: {
+					include: {
+						exercise: {
+							include: {
+								exercise: true,
+							},
+						},
+					},
+				},
+				workoutDay: {
+					include: {
+						plan: true,
+					},
+				},
+			},
+		});
+
+		if (!finishedWorkout) {
+			throw new Error("Could not find finished workout");
+		}
+
+		return finishedWorkout;
+	} catch (error) {
+		throw new Error("Could not retrieve finished workout");
+	}
+};
+
+export const getAllWorkouts = async (userId) => {
+	try {
+		const finishedWorkouts = await prisma.workoutSession.findMany({
+			where: {
+				userId: userId,
+			},
+			orderBy: {
+				startTime: "desc",
+			},
+			include: {
+				workoutDay: {
+					include: {
+						plan: true,
+					},
+				},
+				loggedSets: true,
+			},
+		});
+
+		return finishedWorkouts;
+	} catch (error) {
+		throw new Error("Could not retrieve finished workouts");
 	}
 };
 

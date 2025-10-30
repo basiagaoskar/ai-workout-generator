@@ -10,11 +10,11 @@ const navbarElements = [
 		id: 2,
 		title: "Workout",
 		submenu: [
-			{ id: 21, title: "Generate Workout", path: "/generate-workout" },
+			{ id: 21, title: "My Workout Plans", path: "/generated-workout-plans" },
 			{ id: 22, title: "My Workouts", path: "/workouts" },
 		],
 	},
-	{ id: 3, title: "Settings", path: "/settings" },
+	{ id: 3, title: "Generate Workout", path: "/generate-workout" },
 ];
 
 function Navbar() {

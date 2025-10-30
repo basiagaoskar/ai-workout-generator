@@ -52,7 +52,7 @@ const Home = () => {
 							<p>Create a new plan that perfectly suits you</p>
 						</div>
 					</Link>
-					<Link to="/workouts" className="card bg-base-300 hover:bg-primary transition-all duration-300">
+					<Link to="/generated-workout-plans" className="card bg-base-300 hover:bg-primary transition-all duration-300">
 						<div className="card-body items-center text-center">
 							<ListChecks className="w-12 h-12 mb-2" />
 							<h2 className="card-title text-2xl">My workouts ({totalWorkouts})</h2>
@@ -73,7 +73,7 @@ const Home = () => {
 										Utworzono: {new Date(recentWorkout.createdAt).toLocaleDateString()}
 									</p>
 								</div>
-								<Link to={`/workout/${recentWorkout.id}`} className="btn btn-sm btn-outline btn-primary mt-4 sm:mt-0">
+								<Link to={`/generated-workout-plan/${recentWorkout.id}`} className="btn btn-sm btn-outline btn-primary mt-4 sm:mt-0">
 									See Details
 								</Link>
 							</div>

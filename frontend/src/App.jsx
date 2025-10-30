@@ -11,8 +11,11 @@ import SignupForm from "./pages/Auth/SignupForm";
 import Home from "./pages/Home/Home";
 import WorkoutGenerator from "./pages/Generator/WorkoutGenerator";
 import Account from "./pages/Account/Account";
-import Workouts from "./pages/Workouts/Workouts";
-import WorkoutDetails from "./pages/WorkoutDetails/WorkoutDetails";
+import GeneratedWorkoutPlans from "./pages/GeneratedWorkoutPlans/GeneratedWorkoutPlans";
+import GeneratedWorkoutPlan from "./pages/GeneratedWorkoutPlan/GeneratedWorkoutPlan";
+import NewWorkout from "./pages/NewWorkout/NewWorkout";
+import AllFinishedWorkouts from "./pages/AllFinishedWorkouts/AllFinishedWorkouts";
+import FinishedWorkout from "./pages/FinishedWorkout/FinishedWorkout";
 
 import NotFound from "./pages/ErrorPage/NotFound";
 
@@ -55,8 +58,11 @@ function App() {
 						<Route path="/home" element={<Home />} />
 						<Route path="/account" element={<Account />} />
 						<Route path="/generate-workout" element={<WorkoutGenerator />} />
-						<Route path="/workouts" element={<Workouts />} />
-						<Route path="/workout/:id" element={<WorkoutDetails />} />
+						<Route path="/generated-workout-plans" element={<GeneratedWorkoutPlans />} />
+						<Route path="/generated-workout-plan/:id" element={<GeneratedWorkoutPlan />} />
+						<Route path="/workout/start/:dayId" element={<NewWorkout />} />
+						<Route path="/workouts" element={<AllFinishedWorkouts />} />
+						<Route path="/workout/:dayId" element={<FinishedWorkout />} />
 					</Route>
 
 					<Route path="*" element={<NotFound />} />

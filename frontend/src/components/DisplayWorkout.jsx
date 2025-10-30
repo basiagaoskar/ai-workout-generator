@@ -1,5 +1,6 @@
 import React from "react";
-import { CalendarDays } from "lucide-react";
+import { Link } from "react-router-dom";
+import { CalendarDays, Play } from "lucide-react";
 
 function DisplayWorkout({ workout }) {
 	return (
@@ -13,7 +14,10 @@ function DisplayWorkout({ workout }) {
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
 				{workout.days.map((day) => (
-					<div key={day.id} className="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+					<div
+						key={day.id}
+						className="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300 relative"
+					>
 						<div className="card-body">
 							<h3 className="card-title text-primary flex flex-col items-center gap-2">
 								<div className="flex flex-row gap-1 items-center">
@@ -25,7 +29,7 @@ function DisplayWorkout({ workout }) {
 
 							<div className="divider my-2"></div>
 
-							<ul className="space-y-2">
+							<ul className="space-y-2 mb-10">
 								{day.exercises.map((ex) => (
 									<li
 										key={ex.id}
@@ -44,6 +48,12 @@ function DisplayWorkout({ workout }) {
 									</li>
 								))}
 							</ul>
+
+							<Link to={`/workout/start/${day.id}`} className="absolute bottom-4 right-4">
+								<button className="btn btn-sm btn-primary">
+									<Play className="w-4 h-4" /> Start Workout
+								</button>
+							</Link>
 						</div>
 					</div>
 				))}

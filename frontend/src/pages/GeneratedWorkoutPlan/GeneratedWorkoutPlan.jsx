@@ -1,43 +1,41 @@
 import React, { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 import Navbar from "../../components/Navbar";
 import DisplayWorkout from "../../components/DisplayWorkout";
 import { useWorkoutStore } from "../../store/useWorkoutStore";
+import ReturnButton from "../../components/ReturnButton";
 
-function WorkoutDetails() {
+function GeneratedWorkoutPlan() {
 	const { id } = useParams();
-	const { fetchWorkoutById, selectedWorkout, isLoadingSelectedWorkout } = useWorkoutStore();
+	const { fetchWorkoutPlanById, generatedWorkoutPlan, isLoadingGeneratedWorkoutPlan } = useWorkoutStore();
 
 	useEffect(() => {
 		if (id) {
-			fetchWorkoutById(id);
+			fetchWorkoutPlanById(id);
 		}
-	}, [id, fetchWorkoutById]);
+	}, [id, fetchWorkoutPlanById]);
 
 	return (
 		<div className="container mx-auto">
 			<Navbar />
 			<div className="max-w-6xl mx-auto p-4 md:p-8">
-				<Link to="/workouts" className="btn btn-ghost mb-4">
-					<ArrowLeft />
-					Back to my workouts
-				</Link>
+				<ReturnButton />
 
-				{isLoadingSelectedWorkout && (
+				{isLoadingGeneratedWorkoutPlan && (
 					<div className="flex justify-center items-center h-64">
 						<Loader2 className="animate-spin w-12 h-12 text-primary" />
 					</div>
 				)}
 
-				{!isLoadingSelectedWorkout && selectedWorkout && (
+				{!isLoadingGeneratedWorkoutPlan && generatedWorkoutPlan && (
 					<div className="p-5 sm:p-18 bg-base-300 rounded-2xl shadow-xl">
-						<DisplayWorkout workout={selectedWorkout} />
+						<DisplayWorkout workout={generatedWorkoutPlan} />
 					</div>
 				)}
 
-				{!isLoadingSelectedWorkout && !selectedWorkout && (
+				{!isLoadingGeneratedWorkoutPlan && !generatedWorkoutPlan && (
 					<div className="text-center py-10">
 						<p className="text-xl opacity-70">Could not find a workout</p>
 					</div>
@@ -47,4 +45,4 @@ function WorkoutDetails() {
 	);
 }
 
-export default WorkoutDetails;
+export default GeneratedWorkoutPlan;

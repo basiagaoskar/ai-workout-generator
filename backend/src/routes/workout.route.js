@@ -1,12 +1,26 @@
 import express from "express";
 import { protectedRoute } from "../middlewares/auth.middleware.js";
-import { generateWorkout, getOneWorkout, getUserWorkouts, saveWorkout } from "../controllers/workout.controller.js";
+import {
+	getAllWorkoutPlans,
+	getOneWorkoutPlan,
+	getWorkoutDay,
+	getFinishedWorkout,
+	getAllFinishedWorkouts,
+	generateWorkout,
+	saveWorkout,
+} from "../controllers/workout.controller.js";
 
 const router = express.Router();
 
-router.get("/all", protectedRoute, getUserWorkouts);
+router.get("/workout-plan/all", protectedRoute, getAllWorkoutPlans);
 
-router.get("/one/:id", protectedRoute, getOneWorkout);
+router.get("/workout-plan/:id", protectedRoute, getOneWorkoutPlan);
+
+router.get("/day/:id", protectedRoute, getWorkoutDay);
+
+router.get("/finished-workout/all", protectedRoute, getAllFinishedWorkouts);
+
+router.get("/finished-workout/:id", protectedRoute, getFinishedWorkout);
 
 router.post("/generate", protectedRoute, generateWorkout);
 

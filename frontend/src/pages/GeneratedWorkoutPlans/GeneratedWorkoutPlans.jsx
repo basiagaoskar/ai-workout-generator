@@ -5,7 +5,7 @@ import { ListChecks, Calendar, Loader2, ChevronLeft, ChevronRight } from "lucide
 import Navbar from "../../components/Navbar";
 import { useWorkoutStore } from "../../store/useWorkoutStore";
 
-function Workouts() {
+function GeneratedWorkoutPlans() {
 	const { fetchWorkouts, workouts, isLoadingWorkouts, currentPage, totalPages, totalWorkouts } = useWorkoutStore();
 
 	useEffect(() => {
@@ -51,7 +51,7 @@ function Workouts() {
 												Created: {new Date(plan.createdAt).toLocaleDateString()}
 											</p>
 										</div>
-										<Link to={`/workout/${plan.id}`} className="btn btn-sm btn-outline btn-primary mt-5 sm:mt-0">
+										<Link to={`/generated-workout-plan/${plan.id}`} className="btn btn-sm btn-outline btn-primary mt-5 sm:mt-0">
 											View Details
 										</Link>
 									</div>
@@ -90,4 +90,4 @@ function Workouts() {
 	);
 }
 
-export default Workouts;
+export default GeneratedWorkoutPlans;

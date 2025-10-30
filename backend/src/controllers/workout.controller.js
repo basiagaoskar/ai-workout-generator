@@ -1,4 +1,12 @@
-import { generateWorkoutPlan, getAllWorkouts, getWorkoutById, saveWorkoutSession } from "../services/workout.service.js";
+import {
+	generateWorkoutPlan,
+	getAllGeneratedWorkoutPlans,
+	getWorkoutPlanById,
+	getWorkoutDayById,
+	getFinishedWorkoutById,
+	getAllWorkouts,
+	saveWorkoutSession,
+} from "../services/workout.service.js";
 
 export const generateWorkout = async (req, res) => {
 	try {
@@ -9,28 +17,61 @@ export const generateWorkout = async (req, res) => {
 	}
 };
 
-export const getUserWorkouts = async (req, res) => {
+export const getAllWorkoutPlans = async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const page = req.query.page || 1;
 		const limit = req.query.limit || 10;
 
-		const workouts = await getAllWorkouts(userId, page, limit);
+		const workouts = await getAllGeneratedWorkoutPlans(userId, page, limit);
 		res.status(200).json(workouts);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-export const getOneWorkout = async (req, res) => {
+export const getOneWorkoutPlan = async (req, res) => {
 	try {
 		const workoutId = req.params.id;
 		const userId = req.user.id;
 
-		const workout = await getWorkoutById(workoutId, userId);
+		const workout = await getWorkoutPlanById(workoutId, userId);
 		res.status(200).json(workout);
 	} catch (error) {
 		res.status(404).json({ message: error.message });
+	}
+};
+
+export const getWorkoutDay = async (req, res) => {
+	try {
+		const userId = req.user.id;
+		const workoutDayId = req.params.id;
+		const workoutDay = await getWorkoutDayById(workoutDayId, userId);
+		res.status(200).json(workoutDay);
+	} catch (error) {
+		console.log(error);
+		res.status(404).json({ message: error.message });
+	}
+};
+
+export const getFinishedWorkout = async (req, res) => {
+	try {
+		const workoutId = req.params.id;
+		const userId = req.user.id;
+		const workout = await getFinishedWorkoutById(workoutId, userId);
+		res.status(200).json(workout);
+	} catch (error) {
+		res.status(404).json({ message: error.message });
+	}
+};
+
+export const getAllFinishedWorkouts = async (req, res) => {
+	try {
+		const userId = req.user.id;
+		const workouts = await getAllWorkouts(userId);
+		res.status(200).json(workouts);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
 	}
 };
 
@@ -43,4 +84,3 @@ export const saveWorkout = async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
-

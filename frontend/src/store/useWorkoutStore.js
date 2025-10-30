@@ -5,7 +5,13 @@ import { axiosInstance } from "../lib/axios";
 export const useWorkoutStore = create((set) => ({
 	currentWorkout: null,
 	workouts: [],
-	selectedWorkout: null,
+
+	generatedWorkoutPlan: null,
+	selectedWorkoutDay: null,
+	isLoadingWorkoutDay: false,
+
+	selectedWorkoutSession: null,
+	isLoadingWorkoutSession: false,
 
 	currentPage: 1,
 	totalPages: 1,
@@ -13,7 +19,7 @@ export const useWorkoutStore = create((set) => ({
 
 	isGeneratingWorkout: false,
 	isLoadingWorkouts: false,
-	isLoadingSelectedWorkout: false,
+	isLoadingGeneratedWorkoutPlan: false,
 
 	generateWorkout: async (data) => {
 		set({ isGeneratingWorkout: true, currentWorkout: null });
@@ -33,7 +39,7 @@ export const useWorkoutStore = create((set) => ({
 	fetchWorkouts: async (page = 1, limit = 8) => {
 		set({ isLoadingWorkouts: true });
 		try {
-			const res = await axiosInstance.get(`/workout/all?page=${page}&limit=${limit}`);
+			const res = await axiosInstance.get(`/workout/workout-plan/all?page=${page}&limit=${limit}`);
 			const { data, totalPages, currentPage, totalCount } = res.data;
 			set({
 				workouts: data,
@@ -49,15 +55,69 @@ export const useWorkoutStore = create((set) => ({
 		}
 	},
 
-	fetchWorkoutById: async (id) => {
-		set({ isLoadingSelectedWorkout: true, selectedWorkout: null });
+	fetchWorkoutPlanById: async (id) => {
+		set({ isLoadingGeneratedWorkoutPlan: true, generatedWorkoutPlan: null });
 		try {
-			const res = await axiosInstance.get(`/workout/one/${id}`);
-			set({ selectedWorkout: res.data });
+			const res = await axiosInstance.get(`/workout/workout-plan/${id}`);
+			set({ generatedWorkoutPlan: res.data });
 		} catch (error) {
 			toast.error(error.response?.data?.message || "Failed to fetch workout");
 		} finally {
-			set({ isLoadingSelectedWorkout: false });
+			set({ isLoadingGeneratedWorkoutPlan: false });
+		}
+	},
+
+	fetchWorkoutDayDetails: async (dayId) => {
+		set({ isLoadingWorkoutDay: true, selectedWorkoutDay: null });
+		try {
+			const res = await axiosInstance.get(`/workout/day/${dayId}`);
+			set({ selectedWorkoutDay: res.data });
+			return res.data;
+		} catch (error) {
+			toast.error(error.response?.data?.message || "Failed to load workout day");
+			set({ selectedWorkoutDay: null });
+			return null;
+		} finally {
+			set({ isLoadingWorkoutDay: false });
+		}
+	},
+
+	fetchFinishedWorkouts: async () => {
+		set({ isLoadingFinishedWorkouts: true });
+		try {
+			const res = await axiosInstance.get("/workout/finished-workout/all");
+			set({ finishedWorkouts: res.data });
+		} catch (error) {
+			toast.error(error.response?.data?.message || "Failed to load finished workouts");
+			set({ finishedWorkouts: [] });
+		} finally {
+			set({ isLoadingFinishedWorkouts: false });
+		}
+	},
+
+	fetchFinishedWorkoutSessionById: async (id) => {
+		set({ isLoadingWorkoutSession: true, selectedWorkoutSession: null });
+		try {
+			const res = await axiosInstance.get(`/workout/finished-workout/${id}`);
+			set({ selectedWorkoutSession: res.data });
+			return res.data;
+		} catch (error) {
+			toast.error(error.response?.data?.message || "Failed to fetch workout session");
+			return null;
+		} finally {
+			set({ isLoadingWorkoutSession: false });
+		}
+	},
+
+	saveWorkoutSession: async (data) => {
+		try {
+			const res = await axiosInstance.post("/workout/save", data);
+			toast.success("Workout session saved!");
+			return res.data;
+		} catch (error) {
+			console.error("Save session error:", error);
+			toast.error(error.response?.data?.message || "Failed to save workout session");
+			return false;
 		}
 	},
 }));
