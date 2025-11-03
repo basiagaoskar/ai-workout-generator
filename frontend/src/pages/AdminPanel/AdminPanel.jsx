@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { Loader2, Trash2, Users } from "lucide-react";
-
 import Navbar from "../../components/Navbar";
 import { useAdminStore } from "../../store/useAdminStore";
 
 const AdminPanel = () => {
-	const { users, isLoadingUsers, isDeletingUser, fetchUsers, deleteUser } = useAdminStore();
+	const { users, isLoadingUsers, isDeletingUser, fetchUsers, deleteUser, updateRole } = useAdminStore();
 
 	useEffect(() => {
 		fetchUsers();
@@ -62,7 +61,15 @@ const AdminPanel = () => {
 										</td>
 										<td>{user.email}</td>
 										<td>
-											<div className="badge badge-neutral">{user.role}</div>
+											<select
+												value={user.role}
+												onChange={(e) => updateRole(user.id, e.target.value)}
+												className="select select-bordered select-xs"
+												disabled={isDeletingUser || isLoadingUsers}
+											>
+												<option value="USER">USER</option>
+												<option value="ADMIN">ADMIN</option>
+											</select>
 										</td>
 										<td>{new Date(user.createdAt).toLocaleDateString()}</td>
 										<td className="text-center">

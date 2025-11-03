@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 export const useAdminStore = create((set) => ({
 	users: [],
+
 	isLoadingUsers: false,
 	isDeletingUser: false,
 
@@ -17,6 +18,19 @@ export const useAdminStore = create((set) => ({
 			set({ users: [] });
 		} finally {
 			set({ isLoadingUsers: false });
+		}
+	},
+
+	updateRole: async (userId, newRole) => {
+		set({ isUpdatingRole: true });
+		try {
+			await axiosInstance.put(`/admin/users/${userId}`, { newRole });
+			toast.success("User role updated successfully!");
+			set((state) => ({
+				users: state.users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)),
+			}));
+		} catch (error) {
+			toast.error(error.response.data.message);
 		}
 	},
 

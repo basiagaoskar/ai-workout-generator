@@ -5,7 +5,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 const AdminRoute = () => {
 	const { authUser, isCheckingAuth } = useAuthStore();
 
-	if (!isCheckingAuth) return <Navigate to="/" replace />;
+	if (isCheckingAuth) return <Navigate to="/" replace />;
 
 	if (authUser.role !== "ADMIN") return <Navigate to="/home" replace />;
 
