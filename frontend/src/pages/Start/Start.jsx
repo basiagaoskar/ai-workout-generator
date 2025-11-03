@@ -39,7 +39,7 @@ const Start = () => {
 					</div>
 				</section>
 
-				<section className="py-30">
+				<section className="py-15">
 					<h2 className="text-4xl font-bold text-center mb-12">Key Features</h2>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 						<div className="card bg-base-300 p-6 shadow-xl rounded-xl transition duration-300 hover:shadow-2xl hover:scale-[1.03]">
