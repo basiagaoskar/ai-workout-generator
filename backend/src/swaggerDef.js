@@ -11,6 +11,16 @@ const swaggerOptions = {
 				url: `http://localhost:3000`,
 			},
 		],
+		components: {
+			securitySchemes: {
+				cookieAuth: {
+					type: "http",
+					scheme: "bearer",
+					bearerFormat: "JWT",
+				},
+			},
+		},
+		security: [{ cookieAuth: [] }],
 		tags: [
 			{
 				name: "Authentication",
