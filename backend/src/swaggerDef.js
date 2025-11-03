@@ -14,9 +14,22 @@ const swaggerOptions = {
 		components: {
 			securitySchemes: {
 				cookieAuth: {
-					type: "http",
-					scheme: "bearer",
-					bearerFormat: "JWT",
+					type: "apiKey",
+					in: "cookie",
+					name: "jwt",
+				},
+			},
+			schemas: {
+				UserResponse: {
+					type: "object",
+					properties: {
+						id: { type: "integer" },
+						email: { type: "string" },
+						firstName: { type: "string" },
+						lastName: { type: "string" },
+						role: { type: "string", enum: ["USER", "ADMIN"] },
+						createdAt: { type: "string", format: "date-time" },
+					},
 				},
 			},
 		},
@@ -29,6 +42,10 @@ const swaggerOptions = {
 			{
 				name: "Workouts",
 				description: "Endpoints for generating and retrieving workout plans",
+			},
+			{
+				name: "Admin",
+				description: "Endpoints for admin management ",
 			},
 		],
 	},
