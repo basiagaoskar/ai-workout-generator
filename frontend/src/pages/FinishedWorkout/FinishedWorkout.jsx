@@ -33,9 +33,9 @@ const FinishedWorkout = () => {
 	}
 
 	const { workoutDay, loggedSets, startTime, endTime } = selectedWorkoutSession;
-
+	
 	const groupedByExercise = loggedSets.reduce((acc, set) => {
-		const exName = set.exercise?.exercise?.name || "Unknown Exercise";
+		const exName = set.exercise?.name || "Unknown Exercise";
 		if (!acc[exName]) acc[exName] = [];
 		acc[exName].push(set);
 		return acc;

@@ -16,6 +16,7 @@ import GeneratedWorkoutPlan from "./pages/GeneratedWorkoutPlan/GeneratedWorkoutP
 import NewWorkout from "./pages/NewWorkout/NewWorkout";
 import AllFinishedWorkouts from "./pages/AllFinishedWorkouts/AllFinishedWorkouts";
 import FinishedWorkout from "./pages/FinishedWorkout/FinishedWorkout";
+import CustomWorkout from "./pages/CustomWorkout/CustomWorkout";
 
 import AdminPanel from "./pages/AdminPanel/AdminPanel";
 import NotFound from "./pages/ErrorPage/NotFound";
@@ -65,6 +66,7 @@ function App() {
 						<Route path="/workout/start/:dayId" element={<NewWorkout />} />
 						<Route path="/workouts" element={<AllFinishedWorkouts />} />
 						<Route path="/workout/:dayId" element={<FinishedWorkout />} />
+						<Route path="/start-workout" element={<CustomWorkout />} />
 					</Route>
 					<Route element={<AdminRoute />}>
 						<Route path="/admin" element={<AdminPanel />} />

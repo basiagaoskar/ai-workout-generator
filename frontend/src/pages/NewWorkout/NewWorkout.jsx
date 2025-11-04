@@ -158,7 +158,7 @@ const WorkoutTracker = () => {
 							</div>
 
 							<ul className="space-y-2">
-								<li className="flex text-xs font-medium text-base-content/60 px-1  text-center">
+								<li className="flex text-xs font-medium text-base-content/60 px-1 text-center">
 									<span className="w-8">#</span>
 									<span className="flex-8">Weight (kg)</span>
 									<span className="flex-8">Reps</span>

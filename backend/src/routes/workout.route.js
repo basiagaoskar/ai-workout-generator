@@ -2,12 +2,14 @@ import express from "express";
 import { protectedRoute } from "../middlewares/auth.middleware.js";
 import {
 	getAllWorkoutPlans,
+	getExercises,
 	getOneWorkoutPlan,
 	getWorkoutDay,
 	getFinishedWorkout,
 	getAllFinishedWorkouts,
 	generateWorkout,
 	saveWorkout,
+	saveCustomWorkout,
 } from "../controllers/workout.controller.js";
 
 const router = express.Router();
@@ -38,6 +40,9 @@ const router = express.Router();
  *         description: List of workout plans
  */
 router.get("/workout-plan/all", protectedRoute, getAllWorkoutPlans);
+
+
+router.get("/exercises/all", protectedRoute, getExercises);
 
 /**
  * @swagger
@@ -185,5 +190,7 @@ router.post("/generate", protectedRoute, generateWorkout);
  *         description: Workout saved successfully
  */
 router.post("/save", protectedRoute, saveWorkout);
+
+router.post("/save-custom", protectedRoute, saveCustomWorkout);
 
 export default router;

@@ -26,6 +26,9 @@ export const useWorkoutStore = create((set) => ({
 	isLoadingWorkouts: false,
 	isLoadingGeneratedWorkoutPlan: false,
 
+	allExercises: [],
+	isFetchingExercises: false,
+
 	generateWorkout: async (data) => {
 		set({ isGeneratingWorkout: true, currentWorkout: null });
 		try {
@@ -40,6 +43,18 @@ export const useWorkoutStore = create((set) => ({
 	},
 
 	clearCurrentWorkout: () => set({ currentWorkout: null }),
+
+	fetchAllExercises: async () => {
+		set({ isFetchingExercises: true });
+		try {
+			const res = await axiosInstance.get("/workout/exercises/all");
+			set({ allExercises: res.data });
+		} catch (error) {
+			toast.error(error.response.data.message);
+		} finally {
+			set({ isFetchingExercises: false });
+		}
+	},
 
 	fetchWorkoutPlans: async (page = 1, limit = 8) => {
 		set({ isLoadingWorkouts: true });
@@ -130,6 +145,17 @@ export const useWorkoutStore = create((set) => ({
 		} catch (error) {
 			console.error("Save session error:", error);
 			toast.error(error.response?.data?.message || "Failed to save workout session");
+			return false;
+		}
+	},
+
+	saveCustomWorkoutSession: async (data) => {
+		try {
+			const res = await axiosInstance.post("/workout/save-custom", data);
+			toast.success("Workout session saved!");
+			return res.data;
+		} catch (error) {
+			toast.error(error.response?.data?.message || "Failed to save freestyle workout session");
 			return false;
 		}
 	},

@@ -34,6 +34,25 @@ const getAvailableExercises = async (equipmentKey) => {
 	});
 };
 
+export const getAllExercises = async () => {
+	try {
+		const exercises = await prisma.exercise.findMany({
+			select: {
+				id: true,
+				name: true,
+				targetMuscle: true,
+				equipment: true,
+			},
+			orderBy: {
+				name: "asc",
+			},
+		});
+		return exercises;
+	} catch (error) {
+		throw new Error("Failed to fetch all exercises.");
+	}
+};
+
 export const generateWorkoutPlan = async (preferences, userId) => {
 	const { Goal, Gender, Experience, Equipment, Frequency } = preferences;
 
@@ -261,11 +280,7 @@ export const getFinishedWorkoutById = async (workoutId, userId) => {
 			include: {
 				loggedSets: {
 					include: {
-						exercise: {
-							include: {
-								exercise: true,
-							},
-						},
+						exercise: true,
 					},
 				},
 				workoutDay: {
@@ -329,14 +344,68 @@ export const getAllWorkouts = async (userId, page = 1, limit = 8) => {
 	}
 };
 
+const getExerciseIdByWorkoutExerciseId = async (workoutExerciseId) => {
+	const workoutExercise = await prisma.workoutExercise.findUnique({
+		where: { id: workoutExerciseId },
+		select: { exerciseId: true },
+	});
+	if (!workoutExercise) {
+		throw new Error(`WorkoutExercise with ID ${workoutExerciseId} not found.`);
+	}
+	return workoutExercise.exerciseId;
+};
+
 export const saveWorkoutSession = async (userId, data) => {
 	const { workoutDayId, startTime, endTime, loggedSets } = data;
+
+	try {
+		const logsWithCorrectIds = await Promise.all(
+			loggedSets.map(async (set) => {
+				const globalExerciseId = await getExerciseIdByWorkoutExerciseId(set.exerciseId);
+
+				return {
+					setNumber: set.setNumber,
+					weight: set.weight,
+					reps: set.reps,
+					exerciseId: globalExerciseId,
+					workoutExerciseRefId: set.exerciseId,
+				};
+			})
+		);
+
+		const finishedWorkout = await prisma.workoutSession.create({
+			data: {
+				userId,
+				workoutDayId: workoutDayId,
+				startTime: new Date(startTime),
+				endTime: new Date(endTime),
+				loggedSets: {
+					create: logsWithCorrectIds,
+				},
+			},
+			include: {
+				loggedSets: {
+					include: {
+						exercise: true,
+					},
+				},
+				workoutDay: true,
+			},
+		});
+
+		return finishedWorkout;
+	} catch (error) {
+		throw new Error("Failed to save workout session");
+	}
+};
+
+export const saveCustomWorkoutSession = async (userId, data) => {
+	const { startTime, endTime, loggedSets } = data;
 
 	try {
 		const finishedWorkout = await prisma.workoutSession.create({
 			data: {
 				userId,
-				workoutDayId,
 				startTime: new Date(startTime),
 				endTime: new Date(endTime),
 				loggedSets: {
@@ -351,14 +420,9 @@ export const saveWorkoutSession = async (userId, data) => {
 			include: {
 				loggedSets: {
 					include: {
-						exercise: {
-							include: {
-								exercise: true,
-							},
-						},
+						exercise: true,
 					},
 				},
-				workoutDay: true,
 			},
 		});
 

@@ -28,7 +28,7 @@ model User {
   trainingFrequency  String?  @map("training_frequency")
   createdAt          DateTime @default(now()) @map("created_at")
 
-  workoutPlans WorkoutPlan[]
+  workoutPlans       WorkoutPlan[]
   workoutSessions    WorkoutSession[]
 
   @@map("users")
@@ -68,7 +68,7 @@ model WorkoutExercise {
   exercise    Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   exerciseId  Int
   
-  loggedSets  LoggedSet[] // NOWE: Link do zarejestrowanych serii
+  loggedSetsRef LoggedSet[] @relation("WorkoutPlanLog")
 
   @@map("workout_exercises")
 }
@@ -76,39 +76,43 @@ model WorkoutExercise {
 model Exercise {
   id                Int      @id @default(autoincrement())
   name              String   @unique
-  targetMuscle      String?  @map("target_muscle") 
+  targetMuscle      String?  @map("target_muscle")  
   equipment         String[]
 
   workoutExercises  WorkoutExercise[]
+  loggedSets        LoggedSet[]
 
   @@map("exercises")
 }
 
 model WorkoutSession {
-  id          Int       @id @default(autoincrement())
-  startTime   DateTime  @default(now())
-  endTime     DateTime?
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workoutDay  WorkoutDay @relation(fields: [workoutDayId], references: [id])
-  workoutDayId Int
+  id           Int         @id @default(autoincrement())
+  startTime    DateTime    @default(now())
+  endTime      DateTime?
+  userId       Int
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workoutDay   WorkoutDay? @relation(fields: [workoutDayId], references: [id])
+  workoutDayId Int?
 
-  loggedSets  LoggedSet[]
+  loggedSets   LoggedSet[]
 
   @@map("workout_sessions")
 }
 
 model LoggedSet {
-  id            Int             @id @default(autoincrement())
-  setNumber     Int
-  weight        Float           @default(0.0)
-  reps          Int             @default(0)
+  id                     Int             @id @default(autoincrement())
+  setNumber              Int
+  weight                 Float           @default(0.0)
+  reps                   Int             @default(0)
   
-  session       WorkoutSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sessionId     Int
+  session                WorkoutSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId              Int
   
-  exercise      WorkoutExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  exerciseId    Int
+  exercise               Exercise @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  exerciseId             Int 
+  
+  workoutExerciseRef     WorkoutExercise? @relation("WorkoutPlanLog", fields: [workoutExerciseRefId], references: [id], onDelete: SetNull)
+  workoutExerciseRefId   Int? 
 
   @@map("logged_sets")
 }

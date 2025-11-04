@@ -1,17 +1,28 @@
 import {
 	generateWorkoutPlan,
+	getAllExercises,
 	getAllGeneratedWorkoutPlans,
 	getWorkoutPlanById,
 	getWorkoutDayById,
 	getFinishedWorkoutById,
 	getAllWorkouts,
 	saveWorkoutSession,
+	saveCustomWorkoutSession,
 } from "../services/workout.service.js";
 
 export const generateWorkout = async (req, res) => {
 	try {
 		const workoutPlan = await generateWorkoutPlan(req.body, req.user.id);
 		res.status(200).json(workoutPlan);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const getExercises = async (req, res) => {
+	try {
+		const exercises = await getAllExercises();
+		res.status(200).json(exercises);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -82,6 +93,16 @@ export const saveWorkout = async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const session = await saveWorkoutSession(userId, req.body);
+		res.status(201).json(session);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const saveCustomWorkout = async (req, res) => {
+	try {
+		const userId = req.user.id;
+		const session = await saveCustomWorkoutSession(userId, req.body);
 		res.status(201).json(session);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
