@@ -38,10 +38,35 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: List of workout plans
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/WorkoutPlan'
  */
 router.get("/workout-plan/all", protectedRoute, getAllWorkoutPlans);
 
-
+/**
+ * @swagger
+ * /exercises/all:
+ *   get:
+ *     summary: Get all available exercises
+ *     tags: [Workouts]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved list of exercises
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Exercise'
+ *       400:
+ *         description: Failed to fetch exercises
+ */
 router.get("/exercises/all", protectedRoute, getExercises);
 
 /**
@@ -61,6 +86,10 @@ router.get("/exercises/all", protectedRoute, getExercises);
  *     responses:
  *       200:
  *         description: The requested workout plan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WorkoutPlan'
  */
 router.get("/workout-plan/:id", protectedRoute, getOneWorkoutPlan);
 
@@ -81,6 +110,10 @@ router.get("/workout-plan/:id", protectedRoute, getOneWorkoutPlan);
  *     responses:
  *       200:
  *         description: Workout day data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WorkoutDay'
  */
 router.get("/day/:id", protectedRoute, getWorkoutDay);
 
@@ -95,6 +128,12 @@ router.get("/day/:id", protectedRoute, getWorkoutDay);
  *     responses:
  *       200:
  *         description: List of finished workouts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/WorkoutSession'
  */
 router.get("/finished-workout/all", protectedRoute, getAllFinishedWorkouts);
 
@@ -115,6 +154,10 @@ router.get("/finished-workout/all", protectedRoute, getAllFinishedWorkouts);
  *     responses:
  *       200:
  *         description: Finished workout details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WorkoutSession'
  */
 router.get("/finished-workout/:id", protectedRoute, getFinishedWorkout);
 
@@ -135,17 +178,26 @@ router.get("/finished-workout/:id", protectedRoute, getFinishedWorkout);
  *             properties:
  *               Goal:
  *                 type: string
+ *                 example: "Lose weight"
  *               Gender:
  *                 type: string
+ *                 example: "Male"
  *               Experience:
  *                 type: string
+ *                 example: "Intermediate"
  *               Equipment:
  *                 type: string
+ *                 example: "Full gym"
  *               Frequency:
  *                 type: integer
+ *                 example: 3
  *     responses:
  *       200:
  *         description: Generated workout plan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WorkoutPlan'
  */
 router.post("/generate", protectedRoute, generateWorkout);
 
@@ -162,35 +214,41 @@ router.post("/generate", protectedRoute, generateWorkout);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               workoutDayId:
- *                 type: integer
- *               startTime:
- *                 type: string
- *                 format: date-time
- *               endTime:
- *                 type: string
- *                 format: date-time
- *               loggedSets:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     exerciseId:
- *                       type: integer
- *                     setNumber:
- *                       type: integer
- *                     reps:
- *                       type: integer
- *                     weight:
- *                       type: number
+ *             $ref: '#/components/schemas/WorkoutSessionInput'
  *     responses:
  *       201:
  *         description: Workout saved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WorkoutSession'
  */
 router.post("/save", protectedRoute, saveWorkout);
 
+/**
+ * @swagger
+ * /workouts/save-custom:
+ *   post:
+ *     summary: Save a custom workout session with logged sets
+ *     tags: [Workouts]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/WorkoutSessionInput'
+ *     responses:
+ *       201:
+ *         description: Workout saved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WorkoutSession'
+ *       400:
+ *         description: Failed to save workout session
+ */
 router.post("/save-custom", protectedRoute, saveCustomWorkout);
 
 export default router;
