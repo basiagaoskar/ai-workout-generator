@@ -63,7 +63,7 @@ const Home = () => {
 					<Link to="/start-workout" className="card bg-base-300 hover:bg-primary transition-all duration-300">
 						<div className="card-body items-center text-center">
 							<PlayCircle className="w-12 h-12 mb-2" />
-							<h2 className="card-title text-2xl">Start new workout</h2>
+							<h2 className="card-title text-2xl">Start new custom workout</h2>
 							<p>Begin your next training session</p>
 						</div>
 					</Link>
@@ -83,7 +83,7 @@ const Home = () => {
 							<div className="card-body flex-col sm:flex-row justify-between sm:items-center">
 								<div>
 									<h2 className="card-title text-xl flex items-center gap-2">
-										{recentWorkout.workoutDay?.plan?.planName || "Unnamed Workout"}
+										{recentWorkout.name || recentWorkout.workoutDay?.plan?.planName || "Unnamed Workout"}
 									</h2>
 
 									<p className="text-sm opacity-70 flex items-center gap-1 mt-1">

@@ -91,6 +91,7 @@ model WorkoutSession {
   endTime      DateTime?
   userId       Int
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String?
   workoutDay   WorkoutDay? @relation(fields: [workoutDayId], references: [id])
   workoutDayId Int?
 

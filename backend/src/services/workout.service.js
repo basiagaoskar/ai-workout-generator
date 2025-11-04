@@ -400,12 +400,13 @@ export const saveWorkoutSession = async (userId, data) => {
 };
 
 export const saveCustomWorkoutSession = async (userId, data) => {
-	const { startTime, endTime, loggedSets } = data;
+	const { name, startTime, endTime, loggedSets } = data;
 
 	try {
 		const finishedWorkout = await prisma.workoutSession.create({
 			data: {
 				userId,
+				name: name || null,
 				startTime: new Date(startTime),
 				endTime: new Date(endTime),
 				loggedSets: {

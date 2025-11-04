@@ -32,7 +32,7 @@ const FinishedWorkout = () => {
 		);
 	}
 
-	const { workoutDay, loggedSets, startTime, endTime } = selectedWorkoutSession;
+	const { name, workoutDay, loggedSets, startTime, endTime } = selectedWorkoutSession;
 	
 	const groupedByExercise = loggedSets.reduce((acc, set) => {
 		const exName = set.exercise?.name || "Unknown Exercise";
@@ -54,7 +54,11 @@ const FinishedWorkout = () => {
 
 				<div className="bg-base-300 p-4 sm:p-6 rounded-lg shadow-lg border border-base-200">
 					<h1 className="text-2xl font-bold mb-2 flex items-center gap-2">
-						<Link to={`/generated-workout-plan/${workoutDay?.id}`}>{workoutDay?.focus || "Workout"}</Link>
+						{workoutDay?.plan?.planName ? (
+							<Link to={`/generated-workout-plan/${workoutDay?.planId}`}>{workoutDay?.focus || "Workout"}</Link>
+						) : (
+							<div>{name || "Unnamed Workout"}</div>
+						)}
 					</h1>
 
 					<div className="text-sm text-base-content/70 mb-6 space-y-1">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, X, CheckCircle2, Loader2, Trash2 } from "lucide-react";
+import { Plus, X, CheckCircle2, Loader2, Trash2, Edit3 } from "lucide-react";
 import toast from "react-hot-toast";
 
 import Navbar from "../../components/Navbar";
@@ -18,6 +18,8 @@ const CustomWorkout = () => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedExerciseId, setSelectedExerciseId] = useState("");
+
+	const [sessionName, setSessionName] = useState("Custom Workout");
 
 	useEffect(() => {
 		if (allExercises.length === 0) {
@@ -136,6 +138,7 @@ const CustomWorkout = () => {
 		}
 
 		const data = {
+			name: sessionName,
 			startTime: startTime.toISOString(),
 			endTime: new Date().toISOString(),
 			loggedSets: allSets,
@@ -181,9 +184,26 @@ const CustomWorkout = () => {
 				<ReturnButton />
 
 				<div className="bg-base-300 p-6 rounded-lg">
-					<div className="flex justify-between items-center mb-10">
-						<h1 className="text-2xl md:text-3xl font-bold text-center flex items-center gap-2">Custom Workout</h1>
-						<button className="btn btn-success btn-sm sm:btn-md" onClick={handleSaveSession} disabled={!isReadyToSave || isSaving}>
+					<div className="flex justify-between items-start mb-10">
+						<div className="mb-6 relative w-full max-w-sm">
+							<input
+								type="text"
+								placeholder="Custom Workout"
+								className="input w-full text-center text-lg font-semibold"
+								value={sessionName}
+								onChange={(e) => setSessionName(e.target.value)}
+								onBlur={() => {
+									if (sessionName.trim() === "") setSessionName("Custom Workout");
+								}}
+							/>
+							<Edit3 className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-base-content/40 pointer-events-none" />
+						</div>
+
+						<button
+							className="btn btn-success btn-sm sm:btn-md flex-shrink-0 mt-2"
+							onClick={handleSaveSession}
+							disabled={!isReadyToSave || isSaving}
+						>
 							{isSaving ? (
 								<>
 									<Loader2 className="w-4 h-4 animate-spin" />
@@ -263,7 +283,7 @@ const CustomWorkout = () => {
 						<button
 							className="btn btn-primary btn-lg"
 							onClick={() => {
-								setSelectedExerciseId(""); // Resetowanie wybranego ID przed otwarciem
+								setSelectedExerciseId("");
 								setIsModalOpen(true);
 							}}
 							disabled={isFetchingExercises || availableExercises.length === 0}
@@ -294,7 +314,6 @@ const CustomWorkout = () => {
 						<option value="" disabled>
 							{isFetchingExercises ? "Loading exercises..." : "Select an exercise"}
 						</option>
-						{/* Używamy filtrowanej listy dostępnych ćwiczeń */}
 						{availableExercises.map((ex) => (
 							<option key={ex.id} value={ex.id}>
 								{ex.name} ({ex.targetMuscle})
