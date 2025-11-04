@@ -10,7 +10,6 @@ export const adminRoute = (req, res, next) => {
 
 		return next();
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };

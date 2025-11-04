@@ -115,7 +115,6 @@ export const useWorkoutStore = create((set) => ({
 				totalWorkoutCount: totalWorkoutCount,
 			});
 		} catch (error) {
-			console.log(error);
 			toast.error(error.response?.data?.message || "Failed to load finished workouts");
 			set({ finishedWorkouts: [], totalWorkoutPages: 1, currentWorkoutPage: 1, totalWorkoutCount: 0 });
 		} finally {

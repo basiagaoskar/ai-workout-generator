@@ -91,7 +91,6 @@ const WorkoutTracker = () => {
 		const savedworkout = await saveWorkoutSession(data);
 
 		if (savedworkout) {
-			console.log(savedworkout.id);
 			navigate(`/workout/${savedworkout.id}`);
 		} else {
 			setIsSaving(false);

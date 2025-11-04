@@ -60,7 +60,6 @@ export const getWorkoutDay = async (req, res) => {
 		const workoutDay = await getWorkoutDayById(workoutDayId, userId);
 		res.status(200).json(workoutDay);
 	} catch (error) {
-		console.log(error);
 		res.status(404).json({ message: error.message });
 	}
 };
