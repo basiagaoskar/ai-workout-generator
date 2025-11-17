@@ -69,7 +69,7 @@ To run the application locally, you need **Docker** and **Docker Compose** insta
 
     ```.env
     GEMINI_API_KEY="YOUR_API_KEY"
-    DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase"
+    DATABASE_URL="postgresql://user:password@db:5432/mydatabase"
     JWT_SECRET="your_jwt_secret_key"
     ```
 
