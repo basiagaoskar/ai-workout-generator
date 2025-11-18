@@ -16,7 +16,7 @@ function WorkoutGenerator() {
 	const { generateWorkout, currentWorkout, isGeneratingWorkout } = useWorkoutStore();
 	const { authUser } = useAuthStore();
 
-	const [currentStep, setCurrentStep] = useState(0);
+	const [currentStep, setCurrentStep] = useState(1);
 
 	const [formData, setFormData] = useState({
 		Goal: null,
