@@ -11,6 +11,14 @@ import {
 } from "../services/workout.service.js";
 
 export const generateWorkout = async (req, res) => {
+	const requiredFields = ["Goal", "Gender", "Experience", "Equipment", "Frequency"];
+
+	const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+	if (missingFields.length > 0) {
+		return res.status(400).json({ message: `Missing required fields: ${missingFields.join(", ")}` });
+	}
+
 	try {
 		const workoutPlan = await generateWorkoutPlan(req.body, req.user.id);
 		res.status(200).json(workoutPlan);
