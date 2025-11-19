@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ArrowLeft, House } from "lucide-react";
 
 import SummaryStep from "./Steps/SummaryStep";
@@ -105,7 +105,7 @@ function WorkoutGenerator() {
 			<div className="container mx-auto px-4 max-w-5xl">
 				<div className="flex flex-col items-center justify-center p-5 sm:p-18 bg-base-300 rounded-2xl shadow-xl">
 					{currentWorkout ? (
-						<DisplayWorkout workout={currentWorkout} />
+						<Navigate to={`/generated-workout-plan/${currentWorkout.id}`} replace />
 					) : currentStep === 0 && hasUserData && !currentWorkout ? (
 						<div className="container mx-auto max-w-2xl p-5 rounded-2xl text-center">
 							<h2 className="text-2xl font-semibold mb-12">
