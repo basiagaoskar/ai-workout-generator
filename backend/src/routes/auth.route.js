@@ -1,5 +1,14 @@
 import express from "express";
-import { checkAuth, signup, login, logout, updateUser, updatePassword, deleteAccount } from "../controllers/auth.controller.js";
+import {
+	checkAuth,
+	signup,
+	login,
+	loginWithGoogle,
+	logout,
+	updateUser,
+	updatePassword,
+	deleteAccount,
+} from "../controllers/auth.controller.js";
 import { protectedRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -87,6 +96,33 @@ router.post("/signup", signup);
  *         description: Invalid credentials
  */
 router.post("/login", login);
+
+/**
+ * @swagger
+ * /auth/google:
+ *   post:
+ *     summary: Log in or sign up using Google OAuth
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - credential
+ *             properties:
+ *               credential:
+ *                 type: string
+ *                 description: Google ID Token received from Google OAuth
+ *                 example: "eyJhbGciOiJSUzI1NiIsImtpZCI6Ij..."
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated with Google
+ *       400:
+ *         description: Invalid Google credential or authentication failed
+ */
+router.post("/google", loginWithGoogle);
 
 /**
  * @swagger

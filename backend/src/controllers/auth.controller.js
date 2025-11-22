@@ -2,6 +2,7 @@ import {
 	verifyAuth,
 	registerUser,
 	authenticateUser,
+	loginWithProvider,
 	clearAuthCookie,
 	updateUserService,
 	updatePasswordService,
@@ -33,6 +34,24 @@ export const login = async (req, res) => {
 		const { createdUser, token } = await authenticateUser(req.body);
 		setJwtCookie(res, token);
 		res.status(200).json(createdUser);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const loginWithGoogle = async (req, res) => {
+	try {
+		const { credential } = req.body;
+
+		if (!credential) {
+			throw new Error("No credential provided");
+		}
+
+		const { user, token } = await loginWithProvider("google", credential);
+
+		setJwtCookie(res, token);
+
+		res.status(200).json(user);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

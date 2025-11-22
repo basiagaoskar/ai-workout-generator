@@ -1,9 +1,11 @@
 import bcrypt from "bcrypt";
+import { OAuth2Client } from "google-auth-library";
 
 import { PrismaClient } from "../generated/prisma/client.js";
 import { generateToken, clearJwtCookie } from "../utils/jwt.js";
 
 const prisma = new PrismaClient();
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const verifyAuth = async (user) => {
 	if (!user) {
@@ -79,6 +81,44 @@ export const authenticateUser = async (loginData) => {
 		createdUser: userWithoutPassword,
 		token: token,
 	};
+};
+
+export const loginWithProvider = async (provider, token) => {
+	if (provider !== "google") {
+		throw new Error("Unsupported provider");
+	}
+
+	const ticket = await googleClient.verifyIdToken({
+		idToken: token,
+		audience: process.env.GOOGLE_CLIENT_ID,
+	});
+
+	const payload = ticket.getPayload();
+	const { email, sub: googleId, given_name: firstName, family_name: lastName } = payload;
+
+	let user = await prisma.user.findUnique({ where: { email } });
+
+	if (!user) {
+		user = await prisma.user.create({
+			data: {
+				email,
+				firstName: firstName || "Google",
+				lastName: lastName || "User",
+				googleId,
+			},
+		});
+	} else {
+		if (!user.googleId) {
+			await prisma.user.update({
+				where: { id: user.id },
+				data: { googleId },
+			});
+		}
+	}
+
+	const jwtToken = generateToken(user.id);
+
+	return { user, token: jwtToken };
 };
 
 export const clearAuthCookie = async (res) => {
