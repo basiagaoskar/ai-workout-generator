@@ -1,5 +1,24 @@
+import { jest } from "@jest/globals";
+
+process.env.GOOGLE_CLIENT_ID = "test-client";
+
+jest.unstable_mockModule("google-auth-library", () => {
+	return {
+		OAuth2Client: jest.fn().mockImplementation(() => ({
+			verifyIdToken: jest.fn().mockResolvedValue({
+				getPayload: () => ({
+					email: "google.test.user@example.com",
+					given_name: "Google",
+					family_name: "User",
+					sub: "123456789",
+				}),
+			}),
+		})),
+	};
+});
+
+const { default: app } = await import("../index.js");
 import request from "supertest";
-import app from "../index.js";
 import { PrismaClient } from "../generated/prisma/client.js";
 
 const prisma = new PrismaClient();
@@ -59,6 +78,26 @@ describe("Auth Integration Tests", () => {
 
 	it("POST /auth/login: should fail to log in with wrong password (400)", async () => {
 		await api.post("/auth/login").send({ email: testUser.email, password: "WrongPassword123" }).expect(400);
+	});
+
+	it("POST /auth/google: should log in or sign up via Google OAuth (200)", async () => {
+		const mockCredential = "fake_google_token_123";
+
+		const res = await api.post("/auth/google").send({ credential: mockCredential }).expect(200).expect("Content-Type", /json/);
+
+		expect(res.body.email).toBe("google.test.user@example.com");
+		expect(res.body.firstName).toBe("Google");
+		expect(res.body.lastName).toBe("User");
+
+		const cookies = res.headers["set-cookie"];
+		expect(cookies).toBeDefined();
+
+		const jwtCookie = cookies.find((c) => c.startsWith("jwt="));
+		expect(jwtCookie).toBeDefined();
+	});
+
+	it("POST /auth/google: should fail when credential is missing (400)", async () => {
+		await api.post("/auth/google").send({}).expect(400);
 	});
 
 	it("POST /auth/update-user: should allow user to update their fitness preferences (200)", async () => {
