@@ -8,6 +8,7 @@ export const useWorkoutStore = create((set) => ({
 	generatedWorkoutPlan: null,
 	selectedWorkoutDay: null,
 	isLoadingWorkoutDay: false,
+	isDeletingPlan: false,
 
 	selectedWorkoutSession: null,
 	isLoadingWorkoutSession: false,
@@ -156,6 +157,23 @@ export const useWorkoutStore = create((set) => ({
 		} catch (error) {
 			toast.error(error.response?.data?.message || "Failed to save freestyle workout session");
 			return false;
+		}
+	},
+
+	deleteWorkoutPlan: async (id) => {
+		set({ isDeletingPlan: true });
+		try {
+			await axiosInstance.delete(`/workout/workout-plan/${id}`);
+			toast.success("Workout plan deleted successfully!");
+
+			set((state) => ({
+				workoutPlans: state.workoutPlans.filter((plan) => plan.id !== id),
+				totalWorkoutPlans: state.totalWorkoutPlans - 1,
+			}));
+		} catch (error) {
+			toast.error(error.response?.data?.message || "Failed to delete workout plan");
+		} finally {
+			set({ isDeletingPlan: false });
 		}
 	},
 }));

@@ -10,6 +10,7 @@ import {
 	generateWorkout,
 	saveWorkout,
 	saveCustomWorkout,
+	deletePlan,
 } from "../controllers/workout.controller.js";
 
 const router = express.Router();
@@ -250,5 +251,44 @@ router.post("/save", protectedRoute, saveWorkout);
  *         description: Failed to save workout session
  */
 router.post("/save-custom", protectedRoute, saveCustomWorkout);
+
+/**
+ * @swagger
+ * /workouts/workout-plan/{id}:
+ *   delete:
+ *     summary: Delete a workout plan by ID
+ *     tags: [Workouts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the workout plan to delete
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Workout plan deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Workout plan deleted successfully
+ *       400:
+ *         description: Workout plan not found or user unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Workout plan not found or unauthorized
+ */
+router.delete("/workout-plan/:id", protectedRoute, deletePlan);
 
 export default router;

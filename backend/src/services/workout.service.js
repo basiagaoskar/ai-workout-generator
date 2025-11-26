@@ -432,3 +432,16 @@ export const saveCustomWorkoutSession = async (userId, data) => {
 		throw new Error("Failed to save workout session");
 	}
 };
+
+export const deleteWorkoutPlanService = async (workoutId, userId) => {
+	const result = await prisma.workoutPlan.deleteMany({
+		where: {
+			id: parseInt(workoutId),
+			userId: userId,
+		},
+	});
+
+	if (result.count === 0) {
+		throw new Error("Workout plan not found or unauthorized");
+	}
+};

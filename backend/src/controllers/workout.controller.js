@@ -8,6 +8,7 @@ import {
 	getAllWorkouts,
 	saveWorkoutSession,
 	saveCustomWorkoutSession,
+	deleteWorkoutPlanService,
 } from "../services/workout.service.js";
 
 export const generateWorkout = async (req, res) => {
@@ -112,6 +113,19 @@ export const saveCustomWorkout = async (req, res) => {
 		const session = await saveCustomWorkoutSession(userId, req.body);
 		res.status(201).json(session);
 	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+export const deletePlan = async (req, res) => {
+	try {
+		const workoutId = req.params.id;
+		const userId = req.user.id;
+
+		await deleteWorkoutPlanService(workoutId, userId);
+		res.status(200).json({ message: "Workout plan deleted successfully" });
+	} catch (error) {
+		console.error("Delete plan error:", error);
 		res.status(400).json({ message: error.message });
 	}
 };

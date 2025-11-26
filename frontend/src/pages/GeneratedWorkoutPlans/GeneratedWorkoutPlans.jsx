@@ -1,12 +1,21 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ListChecks, Calendar, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ListChecks, Calendar, Loader2, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 
 import Navbar from "../../components/Navbar";
 import { useWorkoutStore } from "../../store/useWorkoutStore";
 
 function GeneratedWorkoutPlans() {
-	const { fetchWorkoutPlans, workoutPlans, isLoadingWorkouts, currentPage, totalPages, totalWorkoutPlans } = useWorkoutStore();
+	const {
+		fetchWorkoutPlans,
+		workoutPlans,
+		isLoadingWorkouts,
+		currentPage,
+		totalPages,
+		totalWorkoutPlans,
+		deleteWorkoutPlan,
+		isDeletingPlan,
+	} = useWorkoutStore();
 
 	useEffect(() => {
 		fetchWorkoutPlans(currentPage);
@@ -15,6 +24,13 @@ function GeneratedWorkoutPlans() {
 	const handlePageChange = (newPage) => {
 		if (newPage >= 1 && newPage <= totalPages) {
 			fetchWorkoutPlans(newPage);
+		}
+	};
+
+	const handleDelete = (e, id) => {
+		e.preventDefault();
+		if (window.confirm("Are you sure you want to delete this plan?")) {
+			deleteWorkoutPlan(id);
 		}
 	};
 
@@ -51,9 +67,18 @@ function GeneratedWorkoutPlans() {
 												Created: {new Date(plan.createdAt).toLocaleDateString()}
 											</p>
 										</div>
-										<Link to={`/generated-workout-plan/${plan.id}`} className="btn btn-sm btn-outline btn-primary mt-5 sm:mt-0">
-											View Details
-										</Link>
+										<div className="flex gap-2 mt-5 sm:mt-0">
+											<Link to={`/generated-workout-plan/${plan.id}`} className="btn btn-sm btn-outline btn-primary">
+												View Details
+											</Link>
+											<button
+												className="btn btn-sm btn-outline btn-error"
+												onClick={(e) => handleDelete(e, plan.id)}
+												disabled={isDeletingPlan}
+											>
+												<Trash2 className="w-4 h-4" />
+											</button>
+										</div>
 									</div>
 								</div>
 							))}
