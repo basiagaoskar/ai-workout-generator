@@ -164,4 +164,20 @@ describe("Workout Integration Tests", () => {
 		expect(res.body.id).toBe(savedWorkoutSessionId);
 		expect(res.body.loggedSets.length).toBe(2);
 	});
+
+	it("DELETE /workout/workout-plan/:id: should delete workout plan (200)", async () => {
+		const generateRes = await api.post("/workout/generate").set("Cookie", userCookie).send(workoutPreferences).expect(200);
+
+		const planIdToDelete = generateRes.body.id;
+
+		const deleteRes = await api.delete(`/workout/workout-plan/${planIdToDelete}`).set("Cookie", userCookie).expect(200);
+
+		expect(deleteRes.body.message).toBe("Workout plan deleted successfully");
+
+		await api.get(`/workout/workout-plan/${planIdToDelete}`).set("Cookie", userCookie).expect(404);
+	});
+
+	it("DELETE /workout/workout-plan/:id: should return 401 when deleting without authorization", async () => {
+		await api.delete(`/workout/workout-plan/${generatedWorkoutPlanId}`).expect(401);
+	});
 });
