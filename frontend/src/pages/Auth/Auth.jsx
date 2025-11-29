@@ -27,8 +27,8 @@ function Auth() {
 			<div className="min-h-screen text-primary bg-base-100 flex justify-center items-center">
 				<HomeButton />
 				<div className="rounded-xl bg-base-300 w-full max-w-7xl flex flex-col lg:flex-row justify-around m-5 p-7 shadow-2xl gap-8">
-					<div className="w-full lg:w-1/2 relative">
-						<div className="w-full h-64 lg:h-full">
+					<div className="hidden lg:block w-1/2 relative">
+						<div className="w-full h-full">
 							<div className="carousel rounded-xl h-full">
 								<div id="slide1" className="carousel-item relative w-full">
 									<img src="/cat.png" className="w-full" alt="Cat 1" />
