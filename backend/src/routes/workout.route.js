@@ -177,21 +177,36 @@ router.get("/finished-workout/:id", protectedRoute, getFinishedWorkout);
  *           schema:
  *             type: object
  *             properties:
- *               Goal:
+ *               goal:
  *                 type: string
- *                 example: "Lose weight"
- *               Gender:
+ *                 example: muscle_gain
+ *               gender:
  *                 type: string
- *                 example: "Male"
- *               Experience:
+ *                 example: man
+ *               experience:
  *                 type: string
- *                 example: "Intermediate"
- *               Equipment:
+ *                 example: intermediate
+ *               equipment:
  *                 type: string
- *                 example: "Full gym"
- *               Frequency:
- *                 type: integer
- *                 example: 3
+ *                 example: full_gym
+ *               frequency:
+ *                 type: string
+ *                 example: "4_5"
+ *               weight:
+ *                 type: number
+ *                 example: 80
+ *               height:
+ *                 type: number
+ *                 example: 180
+ *               bestBench:
+ *                 type: number
+ *                 example: 100
+ *               bestSquat:
+ *                 type: number
+ *                 example: 140
+ *               bestDeadlift:
+ *                 type: number
+ *                 example: 180
  *     responses:
  *       200:
  *         description: Generated workout plan
@@ -200,6 +215,7 @@ router.get("/finished-workout/:id", protectedRoute, getFinishedWorkout);
  *             schema:
  *               $ref: '#/components/schemas/WorkoutPlan'
  */
+
 router.post("/generate", protectedRoute, generateWorkout);
 
 /**

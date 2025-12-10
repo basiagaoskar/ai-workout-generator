@@ -166,6 +166,21 @@ router.post("/logout", logout);
  *               frequency:
  *                 type: string
  *                 example: "3 times per week"
+ *               weight:
+ *                 type: number
+ *                 example: 80
+ *               hight:
+ *                 type: number
+ *                 example: 180
+ *               bestBench:
+ *                 type: number
+ *                 example: 100
+ *               bestSquat:
+ *                 type: number
+ *                 example: 140
+ *               bestDeadlift:
+ *                 type: number
+ *                 example: 180
  *     responses:
  *       200:
  *         description: User updated successfully
