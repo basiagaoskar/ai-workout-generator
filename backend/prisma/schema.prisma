@@ -23,11 +23,18 @@ model User {
   googleId           String?  @unique @map("google_id")
   appleId            String?  @unique @map("apple_id")
   role               String   @default("USER")
+ 
   fitnessGoal        String?  @map("fitness_goal")
   gender             String?
+  weight             Float?
+  height             Float? 
+  bestBench          Float?   @map("best_bench")
+  bestSquat          Float?   @map("best_squat")
+  bestDeadlift       Float?   @map("best_deadlift")
   experienceLevel    String?  @map("experience_level")
   availableEquipment String?  @map("available_equipment")
   trainingFrequency  String?  @map("training_frequency")
+
   createdAt          DateTime @default(now()) @map("created_at")
 
   workoutPlans       WorkoutPlan[]

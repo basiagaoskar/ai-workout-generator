@@ -142,7 +142,7 @@ function WorkoutGenerator() {
 				<div className="flex flex-col items-center justify-center p-5 sm:p-18 bg-base-300 rounded-2xl shadow-xl">
 					{currentWorkout ? (
 						<Navigate to={`/generated-workout-plan/${currentWorkout.id}`} replace />
-					) : currentStep === 0 && hasUserData && !currentWorkout ? (
+					) : currentStep === 1 && hasUserData && !currentWorkout ? (
 						<div className="container mx-auto max-w-2xl p-5 rounded-2xl text-center">
 							<h2 className="text-2xl font-semibold mb-12">
 								We've detected that you already have saved training data. Would you like to use it to generate a plan, or would you prefer

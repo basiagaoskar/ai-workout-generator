@@ -126,7 +126,7 @@ export const clearAuthCookie = async (res) => {
 };
 
 export const updateUserService = async (userId, data) => {
-	const { goal, gender, experience, equipment, frequency } = data;
+	const { goal, gender, experience, equipment, frequency, weight, height, bestBench, bestSquat, bestDeadlift } = data;
 
 	const updatedUser = await prisma.user.update({
 		where: { id: userId },
@@ -136,6 +136,12 @@ export const updateUserService = async (userId, data) => {
 			experienceLevel: experience || null,
 			availableEquipment: equipment || null,
 			trainingFrequency: frequency || null,
+
+			weight: weight ? parseFloat(weight) : null,
+			height: height ? parseFloat(height) : null,
+			bestBench: bestBench ? parseFloat(bestBench) : null,
+			bestSquat: bestSquat ? parseFloat(bestSquat) : null,
+			bestDeadlift: bestDeadlift ? parseFloat(bestDeadlift) : null,
 		},
 	});
 

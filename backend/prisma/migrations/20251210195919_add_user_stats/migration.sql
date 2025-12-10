@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "best_bench" DOUBLE PRECISION,
+ADD COLUMN     "best_deadlift" DOUBLE PRECISION,
+ADD COLUMN     "best_squat" DOUBLE PRECISION,
+ADD COLUMN     "height" DOUBLE PRECISION,
+ADD COLUMN     "weight" DOUBLE PRECISION;
