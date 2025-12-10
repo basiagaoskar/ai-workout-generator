@@ -71,6 +71,8 @@ To run the application locally, you need **Docker** and **Docker Compose** insta
     GEMINI_API_KEY="YOUR_API_KEY"
     DATABASE_URL="postgresql://user:password@db:5432/mydatabase"
     JWT_SECRET="your_jwt_secret_key"
+    GOOGLE_CLIENT_ID="your_google_client_id"
+    NODE_ENV="development or test"
     ```
 
 3.  **Run the Application with Docker Compose:**
