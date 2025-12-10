@@ -58,6 +58,11 @@ const workoutPreferences = {
 	Experience: "intermediate",
 	Equipment: "bodyweight",
 	Frequency: "4_5",
+	Weight: 80,
+	Height: 180,
+	BestBench: 100,
+	BestSquat: 140,
+	BestDeadlift: 180,
 };
 
 beforeAll(async () => {
