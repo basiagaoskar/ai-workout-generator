@@ -43,4 +43,21 @@ export const workoutGeneratorSteps = {
 			{ key: "6_7", label: "6-7 Days (Advanced)" },
 		],
 	},
+	Biometrics: {
+		title: "Your Measurements",
+		type: "input",
+		fields: [
+			{ key: "Weight", label: "Weight (kg)" },
+			{ key: "Height", label: "Height (cm)" },
+		],
+	},
+	Strength: {
+		title: "Best Lifts (1 Rep Max)",
+		type: "input",
+		fields: [
+			{ key: "BestBench", label: "Bench Press (kg)" },
+			{ key: "BestSquat", label: "Squat (kg)" },
+			{ key: "BestDeadlift", label: "Deadlift (kg)" },
+		],
+	},
 };

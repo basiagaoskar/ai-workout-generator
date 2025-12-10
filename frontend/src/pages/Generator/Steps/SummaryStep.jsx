@@ -10,6 +10,8 @@ function SummaryStep({ formData, isGenerating, handleGenerate, stepData }) {
 		return option ? option.label : "Not selected";
 	};
 
+	const displayValue = (val) => val || "Not provided";
+
 	return (
 		<>
 			<h2 className="text-3xl font-bold mb-2">Summary & Generation</h2>
@@ -23,6 +25,15 @@ function SummaryStep({ formData, isGenerating, handleGenerate, stepData }) {
 				</p>
 				<p>
 					<strong>Experience:</strong> {findLabel("Experience", formData.Experience)}
+				</p>
+				<p>
+					<strong>Your measurements:</strong> {displayValue(formData.Height)} cm, {displayValue(formData.Weight)} kg
+				</p>
+				<p>
+					<strong>Your best lifts:</strong>
+					<br /> Bench: {displayValue(formData.BestBench)} kg
+					<br /> Squat: {displayValue(formData.BestSquat)} kg
+					<br /> Deadlift: {displayValue(formData.BestDeadlift)} kg
 				</p>
 				<p>
 					<strong>Equipment:</strong> {findLabel("Equipment", formData.Equipment)}

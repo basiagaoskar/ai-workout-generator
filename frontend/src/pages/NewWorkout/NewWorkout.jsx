@@ -20,9 +20,17 @@ const WorkoutTracker = () => {
 			const data = await fetchWorkoutDayDetails(dayId);
 			if (data?.exercises) {
 				const initialSets = data.exercises.reduce((acc, ex) => {
+					let prefillWeight = "";
+					if (ex.suggestedWeight) {
+						const numericWeight = parseFloat(ex.suggestedWeight);
+						if (!isNaN(numericWeight)) {
+							prefillWeight = numericWeight;
+						}
+					}
+					
 					acc[ex.id] = Array.from({ length: ex.sets }, (_, i) => ({
 						setNumber: i + 1,
-						weight: "",
+						weight: prefillWeight,
 						reps: "",
 					}));
 					return acc;

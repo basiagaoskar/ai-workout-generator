@@ -1,20 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { ArrowLeft, House } from "lucide-react";
 
 import SummaryStep from "./Steps/SummaryStep";
 import NormalStep from "./Steps/NormalStep";
-import DisplayWorkout from "../../components/DisplayWorkout";
+import InputStep from "./Steps/InputStep";
 
 import { useWorkoutStore } from "../../store/useWorkoutStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import { workoutGeneratorSteps } from "../../data/workoutGeneratorConfig";
 
-const steps = ["Goal", "Gender", "Experience", "Equipment", "Frequency", "Summary"];
+const steps = ["Goal", "Gender", "Experience", "Biometrics", "Strength", "Equipment", "Frequency", "Summary"];
 
 function WorkoutGenerator() {
-	const { generateWorkout, currentWorkout, isGeneratingWorkout } = useWorkoutStore();
+	const { generateWorkout, currentWorkout, isGeneratingWorkout, clearCurrentWorkout } = useWorkoutStore();
 	const { authUser } = useAuthStore();
+
+	useEffect(() => {
+		clearCurrentWorkout();
+	}, [clearCurrentWorkout]);
 
 	const [currentStep, setCurrentStep] = useState(1);
 
@@ -24,6 +28,11 @@ function WorkoutGenerator() {
 		Experience: null,
 		Equipment: null,
 		Frequency: null,
+		Weight: null,
+		Height: null,
+		BestBench: null,
+		BestSquat: null,
+		BestDeadlift: null,
 	});
 
 	const hasUserData =
@@ -42,6 +51,10 @@ function WorkoutGenerator() {
 		setTimeout(handleNext, 500);
 	};
 
+	const handleInputChange = (key, value) => {
+		setFormData((prev) => ({ ...prev, [key]: value }));
+	};
+
 	const handleGenerate = () => {
 		generateWorkout(formData);
 	};
@@ -53,6 +66,11 @@ function WorkoutGenerator() {
 			Experience: authUser.experienceLevel,
 			Equipment: authUser.availableEquipment,
 			Frequency: authUser.trainingFrequency,
+			Weight: authUser.weight,
+			Height: authUser.height,
+			BestBench: authUser.bestBench,
+			BestSquat: authUser.bestSquat,
+			BestDeadlift: authUser.bestDeadlift,
 		});
 		setCurrentStep(steps.length);
 	};
@@ -63,6 +81,10 @@ function WorkoutGenerator() {
 
 	const renderStepContent = () => {
 		const isLastStep = currentStep === steps.length;
+
+		const currentStepName = steps[currentStep - 1];
+		const stepConfig = workoutGeneratorSteps[currentStepName];
+
 		if (isLastStep) {
 			return (
 				<>
@@ -76,6 +98,20 @@ function WorkoutGenerator() {
 						Back to Steps
 					</button>
 				</>
+			);
+		}
+
+		if (stepConfig && stepConfig.type === "input") {
+			return (
+				<InputStep
+					currentStep={currentStep}
+					steps={steps}
+					stepData={workoutGeneratorSteps}
+					formData={formData}
+					handleInputChange={handleInputChange}
+					handleBack={handleBack}
+					handleNext={handleNext}
+				/>
 			);
 		}
 
@@ -128,7 +164,9 @@ function WorkoutGenerator() {
 								value={String((currentStep / steps.length) * 100)}
 								max="100"
 							/>
-							<div className="text-center p-8 bg-base-200 rounded-xl">{renderStepContent()}</div>
+							<div className="text-center p-8 bg-base-200 rounded-xl min-h-[650px] md:min-w-xl xl:min-w-2xl flex flex-col justify-between">
+								{renderStepContent()}
+							</div>
 						</>
 					)}
 				</div>

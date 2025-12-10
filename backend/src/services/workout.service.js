@@ -54,7 +54,7 @@ export const getAllExercises = async () => {
 };
 
 export const generateWorkoutPlan = async (preferences, userId) => {
-	const { Goal, Gender, Experience, Equipment, Frequency } = preferences;
+	const { Goal, Gender, Experience, Equipment, Frequency, Weight, Height, BestBench, BestSquat, BestDeadlift } = preferences;
 
 	const availableExercises = await getAvailableExercises(Equipment);
 	if (availableExercises.length === 0) {
@@ -65,14 +65,24 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 
 	const prompt = `
 		You are a fitness expert. Create a personalized training plan as a JSON object.
-		User is: ${Gender}, Level: ${Experience}.
-		Goal: ${Goal}.
-		Training frequency: ${Frequency} days per week.
+		User Profile:
+        - Gender: ${Gender}
+        - Experience: ${Experience}
+        - Body Weight: ${Weight} kg
+        - Height: ${Height} cm
+		- Goal: ${Goal}
+		- Training frequency: ${Frequency} days per week.
+        - Best Lifts (1RM): Bench Press: ${BestBench || "N/A"}, Squat: ${BestSquat || "N/A"}, Deadlift: ${BestDeadlift || "N/A"}.
 
 		You MUST create the plan using ONLY exercises from this list:
 		[${exerciseNames.join(", ")}]
 
 		The response MUST be a JSON object only, without any additional text or markdown formatting.
+        IMPORTANT: Calculate specific working weights ("suggestedWeight") for each exercise based on the user's 1RM and experience. 
+        - For compound lifts, use approx 70-80% of 1RM for hypertrophy/strength.
+        - For bodyweight exercises, put "Bodyweight".
+        - For accessory lifts, estimate a starting weight based on user stats.
+        
 		The JSON format MUST be:
 		{
 			"planName": "Plan name (e.g., ${Goal} for ${Experience})",
@@ -81,8 +91,12 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 					"day": 1,
 					"focus": "Focus of the day (e.g., Full Body, Upper Body)",
 					"exercises": [
-						{ "name": "Exercise name from list", "sets": 3, "reps": "8-12" },
-						{ "name": "Next exercise from list", "sets": 3, "reps": "10-15" }
+						{ 
+                          "name": "Exercise name from list", 
+                          "sets": 3, 
+                          "reps": "8-12", 
+                          "suggestedWeight": "60" 
+                        }
 					]
 				}
 			]
@@ -127,6 +141,7 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 									sets: exercise.sets,
 									reps: exercise.reps,
 									exerciseId: exerciseRecord.id,
+									suggestedWeight: exercise.suggestedWeight?.toString() || "",
 								};
 							}),
 						},

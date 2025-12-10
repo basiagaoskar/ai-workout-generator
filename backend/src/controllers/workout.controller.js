@@ -12,7 +12,7 @@ import {
 } from "../services/workout.service.js";
 
 export const generateWorkout = async (req, res) => {
-	const requiredFields = ["Goal", "Gender", "Experience", "Equipment", "Frequency"];
+	const requiredFields = ["Goal", "Gender", "Experience", "Equipment", "Frequency", "Weight", "Height"];
 
 	const missingFields = requiredFields.filter((field) => !req.body[field]);
 
