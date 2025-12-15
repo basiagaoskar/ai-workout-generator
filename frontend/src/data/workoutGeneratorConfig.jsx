@@ -47,17 +47,17 @@ export const workoutGeneratorSteps = {
 		title: "Your Measurements",
 		type: "input",
 		fields: [
-			{ key: "weight", label: "Weight (kg)" },
-			{ key: "height", label: "Height (cm)" },
+			{ key: "Weight", label: "Weight (kg)" },
+			{ key: "Height", label: "Height (cm)" },
 		],
 	},
 	Strength: {
 		title: "Best Lifts (1 Rep Max)",
 		type: "input",
 		fields: [
-			{ key: "bestBench", label: "Bench Press (kg)" },
-			{ key: "bestSquat", label: "Squat (kg)" },
-			{ key: "bestDeadlift", label: "Deadlift (kg)" },
+			{ key: "BestBench", label: "Bench Press (kg)" },
+			{ key: "BestSquat", label: "Squat (kg)" },
+			{ key: "BestDeadlift", label: "Deadlift (kg)" },
 		],
 	},
 };

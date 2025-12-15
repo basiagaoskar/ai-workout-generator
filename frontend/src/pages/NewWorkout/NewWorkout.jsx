@@ -188,7 +188,7 @@ const WorkoutTracker = () => {
 											type="number"
 											value={set.reps}
 											onChange={(e) => handleSetChange(exercise.id, i, "reps", e.target.value)}
-											placeholder="reps"
+											placeholder={exercise.reps}
 											className="input input-bordered input-sm flex-1 text-center"
 											min="0"
 											step="1"

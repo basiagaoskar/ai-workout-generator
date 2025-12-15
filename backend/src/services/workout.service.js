@@ -92,10 +92,10 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 					"focus": "Focus of the day (e.g., Full Body, Upper Body)",
 					"exercises": [
 						{ 
-                          "name": "Exercise name from list", 
-                          "sets": 3, 
-                          "reps": "8-12", 
-                          "suggestedWeight": "60" 
+						"name": "Exercise name from list", 
+                        "sets": 3, 
+                        "reps": "8-12", 
+                        "suggestedWeight": "60" 
                         }
 					]
 				}
@@ -163,6 +163,10 @@ export const generateWorkoutPlan = async (preferences, userId) => {
 
 		return savedPlan;
 	} catch (e) {
+		if (e.status === 503 || e.code === 503 || (e.message && e.message.includes("503"))) {
+			throw new Error("AI service is currently overloaded. Please try again in a moment.");
+		}
+
 		throw new Error("AI returned invalid data format or invalid exercise.");
 	}
 };
