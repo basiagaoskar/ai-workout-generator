@@ -40,11 +40,24 @@ test.describe("Full user process (Live)", () => {
 		await page.getByText("Intermediate").click();
 		await page.getByRole("button", { name: "Next Step" }).click();
 
-		await page.getByText("Bodyweight Only").click();
+		await expect(page.getByText("Your Measurements")).toBeVisible();
+		const biometricsInputs = page.locator('input[type="number"]');
+		await biometricsInputs.nth(0).fill("80");
+		await biometricsInputs.nth(1).fill("180");
+		await page.getByRole("button", { name: "Next Step" }).click();
+
+		await expect(page.getByText("Best Lifts")).toBeVisible();
+		const strengthInputs = page.locator('input[type="number"]');
+		await strengthInputs.nth(0).fill("100");
+		await strengthInputs.nth(1).fill("140");
+		await strengthInputs.nth(2).fill("180");
+		await page.getByRole("button", { name: "Next Step" }).click();
+
+		await page.getByText("Full Commercial Gym").click();
 		await page.getByRole("button", { name: "Next Step" }).click();
 
 		await expect(page.getByText("How many days per week can you train?")).toBeVisible();
-		await page.getByText("2-3 Days").click();
+		await page.getByText("4-5 Days").click();
 
 		await page.getByRole("button", { name: "Summary" }).click();
 
@@ -56,8 +69,9 @@ test.describe("Full user process (Live)", () => {
 
 		await expect(page.locator("h1")).toBeVisible();
 
-		const weightInput = page.locator('input[placeholder="kg"]').first();
-		const repsInput = page.locator('input[placeholder="reps"]').first();
+		const allInputs = page.locator('li.flex input[type="number"]');
+		const weightInput = allInputs.nth(0);
+		const repsInput = allInputs.nth(1);
 
 		await weightInput.fill("70");
 		await repsInput.fill("10");
